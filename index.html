@@ -167,12 +167,15 @@ body{font-family:var(--font-main);background:var(--gray-100);min-height:100vh;co
 .btn-collapse{padding:9px 18px;background:var(--white);color:var(--gray-500);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.85rem;cursor:pointer;margin-left:auto;}
 
 /* ── EDIT PANEL ── */
-.edit-panel{display:none;padding:20px;border-top:2px solid var(--primary-light);background:#fdfdff;}
+.edit-panel{display:none;border-top:2px solid var(--primary-light);background:#f9fbff;}
 .edit-panel.open{display:block;}
-.edit-panel-title{font-family:var(--font-display);font-size:.92rem;font-weight:600;color:var(--primary);margin-bottom:16px;}
+.edit-panel-title{font-family:var(--font-display);font-size:.95rem;font-weight:600;color:var(--primary);padding:16px 20px 0;margin-bottom:4px;}
+.edit-section-block{padding:14px 20px;border-bottom:1px solid var(--gray-100);}
+.edit-section-block:last-of-type{border-bottom:none;}
+.edit-section-label{font-family:var(--font-display);font-size:.78rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--primary-light);}
 .btn-save-edit{padding:9px 24px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;}
 .btn-save-edit:hover{background:var(--primary-mid);}
-.btn-cancel-edit{padding:9px 20px;background:var(--white);color:var(--gray-600);border:1.5px solid var(--gray-300);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;cursor:pointer;margin-left:8px;}
+.btn-cancel-edit{padding:9px 20px;background:var(--white);color:var(--gray-600);border:1.5px solid var(--gray-300);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;cursor:pointer;}
 
 /* ── REJECT MODAL ── */
 #reject-modal-wrapper{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:996;align-items:center;justify-content:center;padding:1rem;}
@@ -964,116 +967,294 @@ function renderMyRequests() {
 }
 
 // ═══════════════════════════════════════════════
+// PAYTERM OPTIONS (dùng chung cho view + edit)
+// ═══════════════════════════════════════════════
+const PAYTERM_OPTIONS = [
+  ['Z001','Z001 – Prepayment'],['Z002','Z002 – Immediately / Cash on delivery'],
+  ['Z005','Z005 – Within 5 days due net'],['Z007','Z007 – Within 7 days due net'],
+  ['Z010','Z010 – Within 10 days due net'],['Z015','Z015 – Within 15 days due net'],
+  ['Z020','Z020 – Within 20 days due net'],['Z025','Z025 – Within 25 days due net'],
+  ['Z030','Z030 – Within 30 days due net'],['Z035','Z035 – Within 35 days due net'],
+  ['Z040','Z040 – Within 40 days due net'],['Z045','Z045 – Within 45 days due net'],
+  ['Z050','Z050 – Within 50 days due net'],['Z055','Z055 – Within 55 days due net'],
+  ['Z060','Z060 – Within 60 days due net'],['Z065','Z065 – Within 65 days due net'],
+  ['Z070','Z070 – Within 70 days due net'],['Z075','Z075 – Within 75 days due net'],
+  ['Z080','Z080 – Within 80 days due net'],['Z085','Z085 – Within 85 days due net'],
+  ['Z090','Z090 – Within 90 days due net'],['Z100','Z100 – 30% for 40d / 70% for 45d'],
+  ['ZM10','ZM10 – Payable immediately, baseline 10th'],['ZM20','ZM20 – Payable immediately, baseline 20th'],
+  ['ZM98','ZM98 – 45 days net with 25th next month'],['ZM99','ZM99 – 45 days net with 15th next month']
+];
+const PLANNING_GRP_OPTIONS = [
+  ['ZC01','ZC01 – KH_GT – Kênh GT'],['ZC02','ZC02 – KH_KA – Kênh KA'],
+  ['ZC03','ZC03 – KH_MT – Kênh MT'],['ZC04','ZC04 – KH_ON – NPP kênh ON'],
+  ['ZC05','ZC05 – KH_XK – Kênh xuất khẩu'],['ZC06','ZC06 – KH_ECM – Kênh ECM'],
+  ['ZC07','ZC07 – KH_NB – Bán lẻ nội bộ'],
+  ['ZV01','ZV01 – NCC_VTKT – NCC Spare Parts'],['ZV02','ZV02 – NCC_POSM – NCC POSM'],
+  ['ZV03','ZV03 – NCC_NVL – NCC NVL'],['ZV04','ZV04 – NCC_BB – NCC bao bì'],
+  ['ZV05','ZV05 – NCC_MKT – NCC Marketing'],['ZV06','ZV06 – NCC_DVK – NCC dịch vụ khác'],
+  ['ZV07','ZV07 – NCC_VC – NCC vận chuyển'],['ZV08','ZV08 – NCC_TSCĐ – NCC mua sắm TSCĐ'],
+  ['ZV09','ZV09 – NCC_NV – Nhân viên'],['ZV10','ZV10 – NCC_NB – NCC nội bộ'],
+  ['ZV11','ZV11 – NCC_KHAC – NCC khác']
+];
+const AKONT_OPTIONS = [
+  ['14110001','14110001 – Tạm ứng CB CNV'],['24410001','24410001 – Ký quỹ ngắn hạn'],
+  ['24420001','24420001 – Ký quỹ dài hạn'],['33111101','33111101 – Phải trả người bán-trong nước'],
+  ['33111201','33111201 – Phải trả người bán-trong nước-TS'],['33112101','33112101 – Phải trả người bán-nước ngoài'],
+  ['33112201','33112201 – Phải trả người bán-nước ngoài-TS'],['33121101','33121101 – Trả trước người bán trong nước'],
+  ['33121201','33121201 – Trả trước người bán trong nước-TS'],['33122101','33122101 – Trả trước người bán nước ngoài'],
+  ['33122201','33122201 – Trả trước người bán nước ngoài-TS'],['33312001','33312001 – Thuế GTGT nhập khẩu'],
+  ['33330001','33330001 – Thuế xuất nhập khẩu'],['33681001','33681001 – Phải trả nhập thành phẩm nội bộ'],
+  ['33881001','33881001 – Phải trả, phải nộp khác - Lãi vay'],['33881002','33881002 – Phải trả, phải nộp khác - hàng gửi'],
+  ['33882001','33882001 – Phải trả, phải nộp khác'],['34111001','34111001 – Vay ngắn hạn-trong nước'],
+  ['34111002','34111002 – Vay dài hạn-trong nước'],['34112001','34112001 – Vay ngắn hạn-nước ngoài'],
+  ['34112002','34112002 – Vay dài hạn-nước ngoài'],['34121001','34121001 – Nợ thuê tài chính trong nước']
+];
+const IND_SECTOR_OPTIONS = [
+  ['Z01','Z01 – Nhà cung cấp nguyên liệu'],['Z02','Z02 – Nhà cung cấp nhiên liệu'],
+  ['Z03','Z03 – Nhà cung cấp hoá chất'],['Z04','Z04 – Nhà cung cấp bao bì'],
+  ['Z05','Z05 – Nhà cung cấp linh kiện, phụ tùng'],['Z06','Z06 – Nhà cung cấp thuốc thú ý'],
+  ['Z07','Z07 – Nhà cung cấp dụng cụ thú ý'],['Z08','Z08 – Nhà cung cấp thức ăn chăn nuôi'],
+  ['Z09','Z09 – Nhà cung cấp OEM'],['Z10','Z10 – Nhà cung cấp hàng hoá'],
+  ['Z11','Z11 – Nhà cung cấp sản phẩm TOT/POSM'],['Z12','Z12 – Nhà cung cấp dịch vụ logistics'],
+  ['Z13','Z13 – Nhà cung cấp dịch vụ bảo trì/bảo dưỡng'],['Z14','Z14 – Nhà cung cấp dịch vụ khác'],
+  ['Z15','Z15 – Dịch vụ thu mua sữa tươi (Trạm)'],['Z16','Z16 – Sữa tươi (Nông hộ)'],
+  ['Z99','Z99 – Nhà cung cấp thuộc nhóm ngành nghề khác']
+];
+
+function buildSelect(opts, val, id, placeholder) {
+  const options = opts.map(([v,l])=>`<option value="${v}"${val===v?' selected':''}>${l}</option>`).join('');
+  return `<select id="${id}"><option value="">${placeholder}</option>${options}</select>`;
+}
+
+// ═══════════════════════════════════════════════
 // BUILD REQUEST CARD (admin view)
 // ═══════════════════════════════════════════════
-
 function buildRequestCard(r) {
   const d = r.data;
   const sc = r.status==='pending'?'status-pending':r.status==='approved'?'status-approved':'status-rejected';
-  const sl = r.status==='pending'?'\u23f3 Ch\u1edd duy\u1ec7t':r.status==='approved'?'\u2705 \u0110\u00e3 duy\u1ec7t':'\u274c T\u1eeb ch\u1ed1i';
-  const phones = (d.PHONE_LINES||[]).map(p=>p.PHONE).filter(Boolean).join(', ')||'\u2014';
-  const emails = (d.EMAIL_LINES||[]).map(e=>e.EMAIL).filter(Boolean).join(', ')||'\u2014';
-  const taxes  = (d.TAX_LINES||[]).map(t=>`<span class="view-tag">${t.TAXTYPE}: ${t.TAXNUM}</span>`).join('')||'\u2014';
-  const bank0  = (d.BANK_LINES||[])[0];
-  const pur0   = (d.PURCHASING_LINES||[])[0];
-  const ccs    = (d.PURCHASING_LINES||[]).map(p=>p.COMPCODE).join(', ')||'\u2014';
-  const ind    = (d.INDUSTRY_LINES||[])[0]?.IND_SECTOR||'\u2014';
-  const bpBadge = r.bpNumber ? `<span style="background:var(--success-light);color:#14532d;font-size:.75rem;padding:2px 10px;border-radius:8px;font-weight:600;margin-left:8px;">BP# ${r.bpNumber}</span>` : '';
+  const sl = r.status==='pending'?'⏳ Chờ duyệt':r.status==='approved'?'✅ Đã duyệt':'❌ Từ chối';
+  const phones = (d.PHONE_LINES||[]).map(p=>p.PHONE).filter(Boolean).join(', ')||'—';
+  const emails = (d.EMAIL_LINES||[]).map(e=>e.EMAIL).filter(Boolean).join(', ')||'—';
+  const taxHtml = (d.TAX_LINES||[]).length
+    ? (d.TAX_LINES||[]).map(t=>`<span class="view-tag">${t.TAXTYPE||'?'}: ${t.TAXNUM||'?'}</span>`).join('')
+    : '—';
+  const bank0 = (d.BANK_LINES||[])[0];
+  const pur0  = (d.PURCHASING_LINES||[])[0];
+  const ccs   = (d.PURCHASING_LINES||[]).map(p=>p.COMPCODE).filter(Boolean);
+  const indVal= (d.INDUSTRY_LINES||[])[0]?.IND_SECTOR||'';
+  const indLabel = IND_SECTOR_OPTIONS.find(([v])=>v===indVal)?.[1] || indVal || '—';
+  const bpBadge = r.bpNumber?`<span style="background:var(--success-light);color:#14532d;font-size:.75rem;padding:2px 10px;border-radius:8px;font-weight:600;margin-left:8px;">BP# ${r.bpNumber}</span>`:'';
+  const rejectBox = r.status==='rejected'&&r.rejectReason
+    ? `<div class="reject-reason-box"><div class="rrb-label">💬 Lý do từ chối</div><div class="rrb-text">${r.rejectReason}</div></div>`:'' ;
 
-  const rejectBox = r.status==='rejected' && r.rejectReason
-    ? `<div class="reject-reason-box"><div class="rrb-label">\ud83d\udcac L\xfd do t\u1eeb ch\u1ed1i</div><div class="rrb-text">${r.rejectReason}</div></div>` : '';
+  // ── Helper: dòng field view
+  const vf=(label,val,empty=false)=>`<div class="view-field"><div class="view-label">${label}</div><div class="view-value${!val||empty?' empty':''}">${val||'(trống)'}</div></div>`;
+
+  // ── Purchasing lines view
+  const purRows = (d.PURCHASING_LINES||[]).map(p=>{
+    const ptLabel = PAYTERM_OPTIONS.find(([v])=>v===p.PAYTERM)?.[1]||p.PAYTERM||'—';
+    const pgLabel = PLANNING_GRP_OPTIONS.find(([v])=>v===p.PLANNING_GRP)?.[1]||p.PLANNING_GRP||'—';
+    const akLabel = AKONT_OPTIONS.find(([v])=>v===p.AKONT)?.[1]||p.AKONT||'—';
+    return `<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;">
+      <div style="font-size:.78rem;font-weight:700;color:var(--primary);margin-bottom:6px;">📦 Org: ${p.PUR_ORG||'—'} / CC: ${p.COMPCODE||'—'}</div>
+      <div class="view-grid" style="grid-template-columns:1fr 1fr;">
+        ${vf('Currency',p.CURRENCY)}${vf('Payment Terms',ptLabel)}
+        ${vf('Schema Group',p.SCHEMA_GRP)}${vf('Payment Method',p.PAYMETHOD)}
+        ${vf('Planning Group',pgLabel)}${vf('Recon. Account (AKONT)',akLabel)}
+      </div></div>`;
+  }).join('')||'<span style="color:var(--gray-400);font-size:.85rem;">(chưa có)</span>';
+
+  // ── Bank view
+  const bankView = bank0
+    ? `<div class="view-grid">
+        ${vf('Data Key',bank0.DATA_KEY)}${vf('Bank Country',bank0.BANK_CTRY)}
+        ${vf('Bank Key (SWIFT)',bank0.BANK_KEY)}${vf('Số tài khoản',bank0.BANK_ACCT)}
+        ${vf('Chủ tài khoản',bank0.ACCOUNTHOLDER)}
+       </div>`
+    : '<span style="color:var(--gray-400);font-size:.85rem;">(chưa có thông tin ngân hàng)</span>';
 
   const actionBtns = r.status==='pending'
-    ? `<button class="btn-approve" onclick="approveRequest('${r.id}')">\u2705 Duy\u1ec7t &amp; G\u1eedi SAP</button>
-       <button class="btn-edit-req" onclick="toggleEditPanel('${r.id}')">\u270f\ufe0f Ch\u1ec9nh s\u1eeda</button>
-       <button class="btn-reject" onclick="openRejectModal('${r.id}')">\u274c T\u1eeb ch\u1ed1i</button>
-       <button class="btn-collapse" onclick="toggleCard('${r.id}')">Thu g\u1ecdn \u25b2</button>`
-    : `<button class="btn-collapse" onclick="toggleCard('${r.id}')">Thu g\u1ecdn \u25b2</button>`;
+    ? `<button class="btn-approve" onclick="approveRequest('${r.id}')">✅ Duyệt &amp; Gửi SAP</button>
+       <button class="btn-edit-req" onclick="toggleEditPanel('${r.id}')">✏️ Chỉnh sửa</button>
+       <button class="btn-reject" onclick="openRejectModal('${r.id}')">❌ Từ chối</button>
+       <button class="btn-collapse" onclick="toggleCard('${r.id}')">Thu gọn ▲</button>`
+    : `<button class="btn-edit-req" onclick="toggleEditPanel('${r.id}')">✏️ Chỉnh sửa</button>
+       <button class="btn-collapse" onclick="toggleCard('${r.id}')">Thu gọn ▲</button>`;
+
+  // ════ EDIT PANEL — đầy đủ tất cả section ════
+  const ep_id = r.id;
+  const pur_cc1 = (d.PURCHASING_LINES||[]).find(p=>p.COMPCODE==='1000');
+  const pur_cc2 = (d.PURCHASING_LINES||[]).find(p=>p.COMPCODE==='2000');
+  const sharedPur = pur_cc1||pur_cc2||{};
+  const taxLine2 = (d.TAX_LINES||[])[1];
+
+  const editPanel = `
+  <div class="edit-panel" id="edit-${ep_id}">
+    <div class="edit-panel-title">✏️ Chỉnh sửa yêu cầu ${ep_id}</div>
+
+    <!-- S1: Thông tin chung -->
+    <div class="edit-section-block">
+      <div class="edit-section-label">📁 1. Thông tin chung</div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Search Term 1</label><input type="text" id="e_SEARCHTERM1_${ep_id}" value="${d.SEARCHTERM1||''}" maxlength="20"></div>
+        <div class="form-group"><label>Grouping</label><input type="text" id="e_GROUPING_${ep_id}" value="${d.GROUPING||'Z01'}" readonly style="background:var(--gray-50);color:var(--gray-500);cursor:not-allowed;"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Tên công ty (Name 1) <span class="required">*</span></label><input type="text" id="e_NAME1_${ep_id}" value="${d.NAME1||''}" maxlength="40"></div>
+        <div class="form-group"><label>Tên 2 (Name 2)</label><input type="text" id="e_NAME2_${ep_id}" value="${d.NAME2||''}" maxlength="40"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Tên 3 (Name 3)</label><input type="text" id="e_NAME3_${ep_id}" value="${d.NAME3||''}" maxlength="40"></div>
+        <div class="form-group"><label>Tên 4 (Name 4)</label><input type="text" id="e_NAME4_${ep_id}" value="${d.NAME4||''}" maxlength="40"></div>
+      </div>
+    </div>
+
+    <!-- S2: Địa chỉ -->
+    <div class="edit-section-block">
+      <div class="edit-section-label">🏠 2. Địa chỉ</div>
+      <div class="form-row cols-3">
+        <div class="form-group"><label>Quốc gia (Country)</label><input type="text" id="e_COUNTRY_${ep_id}" value="${d.COUNTRY||'VN'}" maxlength="3"></div>
+        <div class="form-group"><label>Tỉnh/Thành (Region)</label><input type="text" id="e_REGION_${ep_id}" value="${d.REGION||''}" maxlength="3"><div class="field-hint">VD: 127 = HCM</div></div>
+        <div class="form-group"><label>Thành phố (City)</label><input type="text" id="e_CITY_${ep_id}" value="${d.CITY||''}" maxlength="25"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Đường (Street)</label><input type="text" id="e_STREET_${ep_id}" value="${d.STREET||''}" maxlength="60"></div>
+        <div class="form-group"><label>Street Suppl. 1</label><input type="text" id="e_STREET2_${ep_id}" value="${d.STREET2||''}" maxlength="40"></div>
+      </div>
+      <div class="form-row cols-3">
+        <div class="form-group"><label>Street Suppl. 2</label><input type="text" id="e_STREET3_${ep_id}" value="${d.STREET3||''}" maxlength="40"></div>
+        <div class="form-group"><label>Street Suppl. 3</label><input type="text" id="e_STREET4_${ep_id}" value="${d.STREET4||''}" maxlength="40"></div>
+        <div class="form-group"><label>Location</label><input type="text" id="e_STREET5_${ep_id}" value="${d.STREET5||''}" maxlength="40"></div>
+      </div>
+    </div>
+
+    <!-- S3: Liên lạc -->
+    <div class="edit-section-block">
+      <div class="edit-section-label">📞 3. Thông tin liên lạc</div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Số điện thoại 1</label><input type="text" id="e_PHONE1_${ep_id}" value="${(d.PHONE_LINES||[])[0]?.PHONE||''}" maxlength="30"></div>
+        <div class="form-group"><label>Số điện thoại 2</label><input type="text" id="e_PHONE2_${ep_id}" value="${(d.PHONE_LINES||[])[1]?.PHONE||''}" maxlength="30"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Email 1</label><input type="email" id="e_EMAIL1_${ep_id}" value="${(d.EMAIL_LINES||[])[0]?.EMAIL||''}" maxlength="100"></div>
+        <div class="form-group"><label>Email 2</label><input type="email" id="e_EMAIL2_${ep_id}" value="${(d.EMAIL_LINES||[])[1]?.EMAIL||''}" maxlength="100"></div>
+      </div>
+    </div>
+
+    <!-- S4: Industry -->
+    <div class="edit-section-block">
+      <div class="edit-section-label">🏗 4. Ngành nghề (Industry)</div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Mã ngành (Industry Sector)</label>
+          ${buildSelect(IND_SECTOR_OPTIONS,(d.INDUSTRY_LINES||[])[0]?.IND_SECTOR||'',`e_IND_SECTOR_${ep_id}`,'-- Chọn ngành nghề --')}
+          <div class="field-hint">IND_DEFAULT tự động gán = 'X'</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S5: Tax -->
+    <div class="edit-section-block">
+      <div class="edit-section-label">📋 5. Thông tin thuế (Tax)</div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Loại thuế 1 (Tax Type)</label><input type="text" id="e_TAXTYPE_${ep_id}" value="${(d.TAX_LINES||[])[0]?.TAXTYPE||''}" maxlength="4" placeholder="VN0"></div>
+        <div class="form-group"><label>Mã số thuế 1 (Tax Number)</label><input type="text" id="e_TAXNUM_${ep_id}" value="${(d.TAX_LINES||[])[0]?.TAXNUM||''}" maxlength="20" placeholder="0601242014"></div>
+      </div>
+      <div class="form-row cols-2" style="background:var(--gray-50);border:1px dashed var(--gray-300);border-radius:var(--radius-sm);padding:10px;margin-top:4px;">
+        <div class="form-group" style="margin-bottom:0;"><label>Loại thuế 2 (Tax Type)</label><input type="text" id="e_TAXTYPE2_${ep_id}" value="${taxLine2?.TAXTYPE||''}" maxlength="4" placeholder="VN1"></div>
+        <div class="form-group" style="margin-bottom:0;"><label>Mã số thuế 2 (Tax Number)</label><input type="text" id="e_TAXNUM2_${ep_id}" value="${taxLine2?.TAXNUM||''}" maxlength="20" placeholder="Để trống nếu không có"></div>
+      </div>
+    </div>
+
+    <!-- S6: Bank -->
+    <div class="edit-section-block">
+      <div class="edit-section-label">🏦 6. Thông tin ngân hàng</div>
+      <div class="form-row cols-4">
+        <div class="form-group"><label>Data Key</label><input type="text" id="e_BANK_DATA_KEY_${ep_id}" value="${bank0?.DATA_KEY||''}" maxlength="4" placeholder="0001"></div>
+        <div class="form-group"><label>Bank Country</label><input type="text" id="e_BANK_CTRY_${ep_id}" value="${bank0?.BANK_CTRY||'VN'}" maxlength="3"></div>
+        <div class="form-group"><label>Bank Key (SWIFT)</label><input type="text" id="e_BANK_KEY_${ep_id}" value="${bank0?.BANK_KEY||''}" maxlength="15" placeholder="BIDVVNVX"></div>
+        <div class="form-group"><label>Số tài khoản</label><input type="text" id="e_BANK_ACCT_${ep_id}" value="${bank0?.BANK_ACCT||''}" maxlength="18" placeholder="12345678901"></div>
+      </div>
+      <div class="form-row cols-1">
+        <div class="form-group"><label>Chủ tài khoản (Account Holder)</label><input type="text" id="e_ACCOUNTHOLDER_${ep_id}" value="${bank0?.ACCOUNTHOLDER||''}" maxlength="60" placeholder="Tên công ty"></div>
+      </div>
+    </div>
+
+    <!-- S7: Purchasing -->
+    <div class="edit-section-block">
+      <div class="edit-section-label">💰 7. Thông tin mua hàng (Purchasing)</div>
+      <div style="font-size:.83rem;font-weight:500;color:var(--gray-700);margin-bottom:10px;">Chọn Company Code áp dụng <span class="required">*</span></div>
+      <div class="company-toggle-row">
+        <label class="company-cb-item${pur_cc1?' checked':''}" id="e_cb-1000-label-${ep_id}">
+          <input type="checkbox" id="e_CB_CC_1000_${ep_id}" value="1000" ${pur_cc1?'checked':''} onchange="document.getElementById('e_cb-1000-label-${ep_id}').classList.toggle('checked',this.checked)">
+          <div><div class="cb-label">1000</div><div class="cb-sub">Company Code 1000</div></div>
+        </label>
+        <label class="company-cb-item${pur_cc2?' checked':''}" id="e_cb-2000-label-${ep_id}">
+          <input type="checkbox" id="e_CB_CC_2000_${ep_id}" value="2000" ${pur_cc2?'checked':''} onchange="document.getElementById('e_cb-2000-label-${ep_id}').classList.toggle('checked',this.checked)">
+          <div><div class="cb-label">2000</div><div class="cb-sub">Company Code 2000</div></div>
+        </label>
+      </div>
+      <div class="shared-fields-note">ℹ Các trường bên dưới áp dụng chung cho tất cả Company Code đã chọn.</div>
+      <div class="form-row cols-3">
+        <div class="form-group"><label>Tiền tệ (Currency)</label><input type="text" id="e_PUR_CURRENCY_${ep_id}" value="${sharedPur.CURRENCY||'VND'}" maxlength="5"></div>
+        <div class="form-group"><label>Payment Terms</label>${buildSelect(PAYTERM_OPTIONS,sharedPur.PAYTERM||'',`e_PUR_PAYTERM_${ep_id}`,'-- Chọn điều khoản TT --')}</div>
+        <div class="form-group"><label>Schema Group</label><input type="text" id="e_PUR_SCHEMA_GRP_${ep_id}" value="${sharedPur.SCHEMA_GRP||''}" maxlength="2" placeholder="Z1"></div>
+      </div>
+      <div class="form-row cols-3">
+        <div class="form-group"><label>Payment Method</label><input type="text" id="e_PUR_PAYMETHOD_${ep_id}" value="${sharedPur.PAYMETHOD||''}" maxlength="10" placeholder="C"></div>
+        <div class="form-group"><label>Planning Group</label>${buildSelect(PLANNING_GRP_OPTIONS,sharedPur.PLANNING_GRP||'',`e_PUR_PLANNING_GRP_${ep_id}`,'-- Chọn Planning Group --')}</div>
+        <div class="form-group"><label>Recon. Account (AKONT)</label>${buildSelect(AKONT_OPTIONS,sharedPur.AKONT||'',`e_PUR_AKONT_${ep_id}`,'-- Chọn tài khoản đối chiếu --')}</div>
+      </div>
+    </div>
+
+    <div style="padding:0 20px 18px;display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+      <button class="btn-save-edit" onclick="saveEdit('${ep_id}')">💾 Lưu thay đổi</button>
+      <button class="btn-cancel-edit" onclick="toggleEditPanel('${ep_id}')">Huỷ</button>
+    </div>
+  </div>`;
 
   return `<div class="request-card" id="card-${r.id}">
     <div class="request-card-header" onclick="toggleCard('${r.id}')">
       <div class="request-meta">
         <span class="request-id">${r.id}</span>
-        <span class="request-name">${d.NAME1||'\u2014'}${bpBadge}</span>
-        <span class="request-submitter">\ud83d\udc64 ${r.submitter}</span>
-        <span class="request-time">\ud83d\udd50 ${fmtDate(r.submittedAt)}</span>
+        <span class="request-name">${d.NAME1||'—'}${bpBadge}</span>
+        <span class="request-submitter">👤 ${r.submitter}</span>
+        <span class="request-time">🕐 ${fmtDate(r.submittedAt)}</span>
       </div>
       <span class="status-badge ${sc}">${sl}</span>
     </div>
-    <div class="request-body" id="body-${r.id}">
-      <div class="view-section-title">Th\xf4ng tin chung</div>
+    <div class="request-body" id="body-${r.id}" style="display:none;">
+      <div class="view-section-title">📁 Thông tin chung</div>
       <div class="view-grid">
-        <div class="view-field"><div class="view-label">Name 1</div><div class="view-value">${d.NAME1||'\u2014'}</div></div>
-        <div class="view-field"><div class="view-label">Name 2 / 3 / 4</div><div class="view-value ${!d.NAME2?'empty':''}">${[d.NAME2,d.NAME3,d.NAME4].filter(Boolean).join(' / ')||'(tr\u1ed1ng)'}</div></div>
-        <div class="view-field"><div class="view-label">Search Term</div><div class="view-value ${!d.SEARCHTERM1?'empty':''}">${d.SEARCHTERM1||'(tr\u1ed1ng)'}</div></div>
-        <div class="view-field"><div class="view-label">Grouping</div><div class="view-value">${d.GROUPING}</div></div>
+        ${vf('Name 1',d.NAME1)} ${vf('Name 2',d.NAME2)}
+        ${vf('Name 3',d.NAME3)} ${vf('Name 4',d.NAME4)}
+        ${vf('Search Term',d.SEARCHTERM1)} ${vf('Grouping',d.GROUPING)}
       </div>
-      <div class="view-section-title">\u0110\u1ecba ch\u1ec9</div>
+      <div class="view-section-title">🏠 Địa chỉ</div>
       <div class="view-grid">
-        <div class="view-field"><div class="view-label">Qu\u1ed1c gia / V\xf9ng / TP</div><div class="view-value">${d.COUNTRY} / ${d.REGION||'\u2014'} / ${d.CITY||'\u2014'}</div></div>
-        <div class="view-field"><div class="view-label">\u0110\u1ecba ch\u1ec9</div><div class="view-value ${!d.STREET?'empty':''}">${[d.STREET,d.STREET2,d.STREET3,d.STREET4,d.STREET5].filter(Boolean).join(', ')||'(tr\u1ed1ng)'}</div></div>
+        ${vf('Quốc gia',d.COUNTRY)} ${vf('Tỉnh/Thành (Region)',d.REGION)}
+        ${vf('Thành phố',d.CITY)} ${vf('Street',[d.STREET,d.STREET2,d.STREET3,d.STREET4,d.STREET5].filter(Boolean).join(', '))}
       </div>
-      <div class="view-section-title">Li\xean l\u1ea1c</div>
+      <div class="view-section-title">📞 Liên lạc</div>
       <div class="view-grid">
-        <div class="view-field"><div class="view-label">\u0110i\u1ec7n tho\u1ea1i</div><div class="view-value">${phones}</div></div>
-        <div class="view-field"><div class="view-label">Email</div><div class="view-value">${emails}</div></div>
+        ${vf('Điện thoại',phones)} ${vf('Email',emails)}
       </div>
-      <div class="view-section-title">Thu\u1ebf &amp; Ng\xe0nh ngh\u1ec1</div>
+      <div class="view-section-title">🏗 Ngành nghề & Thuế</div>
       <div class="view-grid">
-        <div class="view-field"><div class="view-label">Industry Sector</div><div class="view-value">${ind}</div></div>
-        <div class="view-field"><div class="view-label">Tax Lines</div><div class="view-tags">${taxes}</div></div>
+        ${vf('Industry Sector',indLabel)}
+        <div class="view-field"><div class="view-label">Tax Lines</div><div class="view-tags">${taxHtml}</div></div>
       </div>
-      <div class="view-section-title">Ng\xe2n h\xe0ng</div>
-      <div class="view-grid">
-        <div class="view-field"><div class="view-label">Bank Key / S\u1ed1 TK</div><div class="view-value ${!bank0?'empty':''}">${bank0?bank0.BANK_KEY+' / '+bank0.BANK_ACCT:'(tr\u1ed1ng)'}</div></div>
-        <div class="view-field"><div class="view-label">Account Holder</div><div class="view-value ${!bank0?.ACCOUNTHOLDER?'empty':''}">${bank0?.ACCOUNTHOLDER||'(tr\u1ed1ng)'}</div></div>
+      <div class="view-section-title">🏦 Ngân hàng</div>
+      ${bankView}
+      <div class="view-section-title">💰 Purchasing</div>
+      <div style="margin-bottom:8px;">
+        <span style="font-size:.78rem;color:var(--gray-500);">Company Code(s): </span>
+        ${ccs.map(c=>`<span class="view-tag">${c}</span>`).join(' ')||'—'}
       </div>
-      <div class="view-section-title">Purchasing</div>
-      <div class="view-grid">
-        <div class="view-field"><div class="view-label">Company Code(s)</div><div class="view-tags">${ccs.split(',').map(c=>'<span class="view-tag">'+c.trim()+'</span>').join('')}</div></div>
-        <div class="view-field"><div class="view-label">Payment Terms / Method</div><div class="view-value">${pur0?.PAYTERM||'\u2014'} / ${pur0?.PAYMETHOD||'\u2014'}</div></div>
-        <div class="view-field"><div class="view-label">Planning Group</div><div class="view-value">${pur0?.PLANNING_GRP||'\u2014'}</div></div>
-        <div class="view-field"><div class="view-label">AKONT</div><div class="view-value">${pur0?.AKONT||'\u2014'}</div></div>
-      </div>
+      ${purRows}
       ${rejectBox}
     </div>
-    <div class="edit-panel" id="edit-${r.id}">
-      <div class="edit-panel-title">\u270f\ufe0f Ch\u1ec9nh s\u1eeda y\xeau c\u1ea7u ${r.id}</div>
-      <div class="form-row cols-2">
-        <div class="form-group"><label>Name 1 <span class="required">*</span></label><input type="text" id="e_NAME1_${r.id}" value="${d.NAME1||''}" maxlength="40"></div>
-        <div class="form-group"><label>Name 2</label><input type="text" id="e_NAME2_${r.id}" value="${d.NAME2||''}" maxlength="40"></div>
-      </div>
-      <div class="form-row cols-2">
-        <div class="form-group"><label>Name 3</label><input type="text" id="e_NAME3_${r.id}" value="${d.NAME3||''}" maxlength="40"></div>
-        <div class="form-group"><label>Name 4</label><input type="text" id="e_NAME4_${r.id}" value="${d.NAME4||''}" maxlength="40"></div>
-      </div>
-      <div class="form-row cols-3">
-        <div class="form-group"><label>Country</label><input type="text" id="e_COUNTRY_${r.id}" value="${d.COUNTRY}" maxlength="3"></div>
-        <div class="form-group"><label>Region</label><input type="text" id="e_REGION_${r.id}" value="${d.REGION||''}" maxlength="3"></div>
-        <div class="form-group"><label>City</label><input type="text" id="e_CITY_${r.id}" value="${d.CITY||''}" maxlength="25"></div>
-      </div>
-      <div class="form-row cols-2">
-        <div class="form-group"><label>Street</label><input type="text" id="e_STREET_${r.id}" value="${d.STREET||''}" maxlength="60"></div>
-        <div class="form-group"><label>Street Suppl.1</label><input type="text" id="e_STREET2_${r.id}" value="${d.STREET2||''}" maxlength="40"></div>
-      </div>
-      <div class="form-row cols-2">
-        <div class="form-group"><label>Phone 1</label><input type="text" id="e_PHONE1_${r.id}" value="${(d.PHONE_LINES||[])[0]?.PHONE||''}" maxlength="30"></div>
-        <div class="form-group"><label>Phone 2</label><input type="text" id="e_PHONE2_${r.id}" value="${(d.PHONE_LINES||[])[1]?.PHONE||''}" maxlength="30"></div>
-      </div>
-      <div class="form-row cols-2">
-        <div class="form-group"><label>Email 1</label><input type="text" id="e_EMAIL1_${r.id}" value="${(d.EMAIL_LINES||[])[0]?.EMAIL||''}" maxlength="100"></div>
-        <div class="form-group"><label>Email 2</label><input type="text" id="e_EMAIL2_${r.id}" value="${(d.EMAIL_LINES||[])[1]?.EMAIL||''}" maxlength="100"></div>
-      </div>
-      <div class="form-row cols-2">
-        <div class="form-group"><label>Tax Type</label><input type="text" id="e_TAXTYPE_${r.id}" value="${(d.TAX_LINES||[])[0]?.TAXTYPE||''}" maxlength="4"></div>
-        <div class="form-group"><label>Tax Number</label><input type="text" id="e_TAXNUM_${r.id}" value="${(d.TAX_LINES||[])[0]?.TAXNUM||''}" maxlength="20"></div>
-      </div>
-      <div style="margin-top:14px;display:flex;gap:8px;">
-        <button class="btn-save-edit" onclick="saveEdit('${r.id}')">\ud83d\udcbe L\u01b0u thay \u0111\u1ed5i</button>
-        <button class="btn-cancel-edit" onclick="toggleEditPanel('${r.id}')">Hu\u1ef7</button>
-      </div>
-    </div>
-    <div class="request-actions" id="actions-${r.id}">${actionBtns}</div>
+    ${editPanel}
+    <div class="request-actions" id="actions-${r.id}" style="display:none;">${actionBtns}</div>
   </div>`;
 }
 
@@ -1081,26 +1262,80 @@ function toggleCard(id) {
   const body=document.getElementById('body-'+id);
   const edit=document.getElementById('edit-'+id);
   const actions=document.getElementById('actions-'+id);
-  const hidden=body.style.display==='none';
-  body.style.display=hidden?'block':'none';
-  if(edit){edit.style.display='none';edit.classList.remove('open');}
-  actions.style.display=hidden?'flex':'none';
+  const isHidden = body.style.display==='none'||body.style.display==='';
+  body.style.display = isHidden ? 'block' : 'none';
+  if(edit && !isHidden) { edit.style.display='none'; edit.classList.remove('open'); }
+  actions.style.display = isHidden ? 'flex' : 'none';
 }
 
 function toggleEditPanel(id) {
-  document.getElementById('edit-'+id).classList.toggle('open');
+  const ep = document.getElementById('edit-'+id);
+  const body = document.getElementById('body-'+id);
+  const actions = document.getElementById('actions-'+id);
+  const isOpen = ep.classList.contains('open');
+  if (isOpen) {
+    ep.classList.remove('open');
+  } else {
+    // Mở body nếu chưa mở
+    body.style.display='block';
+    actions.style.display='flex';
+    ep.classList.add('open');
+    ep.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
 }
 
 function saveEdit(id) {
   const req=REQUESTS.find(r=>r.id===id); if(!req) return;
   const ev=f=>{const el=document.getElementById('e_'+f+'_'+id);return el?el.value.trim():'';};
-  req.data.NAME1=ev('NAME1');req.data.NAME2=ev('NAME2');req.data.NAME3=ev('NAME3');req.data.NAME4=ev('NAME4');
-  req.data.COUNTRY=ev('COUNTRY');req.data.REGION=ev('REGION');req.data.CITY=ev('CITY');
-  req.data.STREET=ev('STREET');req.data.STREET2=ev('STREET2');
-  req.data.PHONE_LINES=[ev('PHONE1'),ev('PHONE2')].filter(Boolean).map(p=>({PHONE:p}));
-  req.data.EMAIL_LINES=[ev('EMAIL1'),ev('EMAIL2')].filter(Boolean).map(e=>({EMAIL:e}));
-  const tt=ev('TAXTYPE'),tn=ev('TAXNUM');if(tt||tn)req.data.TAX_LINES=[{TAXTYPE:tt,TAXNUM:tn}];
-  showToast('success','\u0110\u00e3 l\u01b0u','D\u1eef li\u1ec7u y\xeau c\u1ea7u '+id+' \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt.');
+  const esel=f=>{const el=document.getElementById('e_'+f+'_'+id);return el?el.value:'';};
+
+  if(!ev('NAME1')){ showToast('error','Thiếu thông tin','Tên công ty (Name 1) không được để trống.'); return; }
+
+  req.data.GROUPING = ev('GROUPING')||'Z01';
+  req.data.SEARCHTERM1 = ev('SEARCHTERM1');
+  req.data.NAME1 = ev('NAME1'); req.data.NAME2 = ev('NAME2');
+  req.data.NAME3 = ev('NAME3'); req.data.NAME4 = ev('NAME4');
+  req.data.COUNTRY = ev('COUNTRY')||'VN';
+  req.data.REGION  = ev('REGION'); req.data.CITY = ev('CITY');
+  req.data.STREET  = ev('STREET'); req.data.STREET2 = ev('STREET2');
+  req.data.STREET3 = ev('STREET3'); req.data.STREET4 = ev('STREET4');
+  req.data.STREET5 = ev('STREET5');
+
+  req.data.PHONE_LINES = [ev('PHONE1'),ev('PHONE2')].filter(Boolean).map(p=>({PHONE:p}));
+  req.data.EMAIL_LINES = [ev('EMAIL1'),ev('EMAIL2')].filter(Boolean).map(e=>({EMAIL:e}));
+
+  const indSec = esel('IND_SECTOR');
+  req.data.INDUSTRY_LINES = indSec ? [{IND_SECTOR:indSec, IND_DEFAULT:'X'}] : [];
+
+  const taxLines = [];
+  const tt1=ev('TAXTYPE'), tn1=ev('TAXNUM'); if(tt1||tn1) taxLines.push({TAXTYPE:tt1,TAXNUM:tn1});
+  const tt2=ev('TAXTYPE2'), tn2=ev('TAXNUM2'); if(tt2||tn2) taxLines.push({TAXTYPE:tt2,TAXNUM:tn2});
+  req.data.TAX_LINES = taxLines;
+
+  const bKey=ev('BANK_KEY'), bAcct=ev('BANK_ACCT'), bDKey=ev('BANK_DATA_KEY');
+  req.data.BANK_LINES = (bKey||bAcct||bDKey) ? [{
+    DATA_KEY: bDKey, BANK_CTRY: ev('BANK_CTRY')||'VN',
+    BANK_KEY: bKey, BANK_ACCT: bAcct,
+    ACCOUNTHOLDER: ev('ACCOUNTHOLDER')
+  }] : [];
+
+  const cc1 = document.getElementById(`e_CB_CC_1000_${id}`)?.checked;
+  const cc2 = document.getElementById(`e_CB_CC_2000_${id}`)?.checked;
+  if (!cc1 && !cc2) { showToast('error','Chưa chọn Company Code','Vui lòng chọn ít nhất 1 Company Code.'); return; }
+  const sharedPur = {
+    CURRENCY:    ev('PUR_CURRENCY')||'VND',
+    PAYTERM:     esel('PUR_PAYTERM'),
+    SCHEMA_GRP:  ev('PUR_SCHEMA_GRP'),
+    PAYMETHOD:   ev('PUR_PAYMETHOD'),
+    PLANNING_GRP:esel('PUR_PLANNING_GRP'),
+    AKONT:       esel('PUR_AKONT')
+  };
+  req.data.PURCHASING_LINES = [];
+  if(cc1) req.data.PURCHASING_LINES.push({...sharedPur, PUR_ORG:'1000', COMPCODE:'1000'});
+  if(cc2) req.data.PURCHASING_LINES.push({...sharedPur, PUR_ORG:'2000', COMPCODE:'2000'});
+
+  showToast('success','Đã lưu','Dữ liệu yêu cầu '+id+' đã được cập nhật.');
+  document.getElementById('edit-'+id).classList.remove('open');
   applyFilter();
 }
 
