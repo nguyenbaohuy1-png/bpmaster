@@ -5,858 +5,634 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LOF – Vendor Registration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-  :root {
-    --primary: #1a3a5c;
-    --primary-light: #e8f0f9;
-    --primary-mid: #2d5f9e;
-    --accent: #e85d26;
-    --accent-light: #fdf0eb;
-    --success: #16a34a;
-    --success-light: #dcfce7;
-    --danger: #dc2626;
-    --danger-light: #fee2e2;
-    --warning: #d97706;
-    --warning-light: #fef3c7;
-    --gray-50: #f8fafc;
-    --gray-100: #f1f5f9;
-    --gray-200: #e2e8f0;
-    --gray-300: #cbd5e1;
-    --gray-400: #94a3b8;
-    --gray-500: #64748b;
-    --gray-600: #475569;
-    --gray-700: #334155;
-    --gray-800: #1e293b;
-    --gray-900: #0f172a;
-    --white: #ffffff;
-    --font-main: 'Be Vietnam Pro', sans-serif;
-    --font-display: 'Space Grotesk', sans-serif;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.13);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: var(--font-main);
-    background: var(--gray-100);
-    min-height: 100vh;
-    color: var(--gray-800);
-  }
-
-  /* ===== LOGIN PAGE ===== */
-  #login-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e293b 100%);
-    padding: 2rem;
-  }
-
-  .login-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    padding: 3rem;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .login-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .login-logo .brand-name {
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    font-weight: 600;
-    color: var(--primary);
-    letter-spacing: 0.12em;
-  }
-
-  .login-logo .brand-sub {
-    font-size: 0.78rem;
-    color: var(--gray-400);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  .login-divider {
-    width: 48px;
-    height: 3px;
-    background: var(--accent);
-    margin: 1.2rem auto;
-    border-radius: 2px;
-  }
-
-  .login-title {
-    text-align: center;
-    font-size: 1rem;
-    color: var(--gray-600);
-    margin-bottom: 2rem;
-  }
-
-  .form-group {
-    margin-bottom: 1.2rem;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--gray-600);
-    margin-bottom: 6px;
-    letter-spacing: 0.02em;
-  }
-
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-main);
-    font-size: 0.92rem;
-    color: var(--gray-800);
-    background: var(--white);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-  }
-
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    border-color: var(--primary-mid);
-    box-shadow: 0 0 0 3px rgba(45,95,158,0.10);
-  }
-
-  .form-group input.error {
-    border-color: var(--danger);
-  }
-
-  .error-msg {
-    font-size: 0.78rem;
-    color: var(--danger);
-    margin-top: 4px;
-    display: none;
-  }
-
-  .error-msg.show { display: block; }
-
-  .btn-primary {
-    width: 100%;
-    padding: 12px;
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    letter-spacing: 0.04em;
-    transition: background 0.2s, transform 0.1s;
-    margin-top: 0.5rem;
-  }
-
-  .btn-primary:hover { background: var(--primary-mid); }
-  .btn-primary:active { transform: scale(0.98); }
-  .btn-primary:disabled { background: var(--gray-300); cursor: not-allowed; }
-
-  .login-note {
-    text-align: center;
-    font-size: 0.76rem;
-    color: var(--gray-400);
-    margin-top: 1.5rem;
-  }
-
-  /* ===== MAIN APP ===== */
-  #app-page { display: none; }
-
-  .top-bar {
-    background: var(--primary);
-    color: var(--white);
-    padding: 0 2rem;
-    height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: var(--shadow-md);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .top-bar-brand {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-  }
-
-  .top-bar-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-size: 0.85rem;
-  }
-
-  .user-pill {
-    background: rgba(255,255,255,0.15);
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-  }
-
-  .btn-logout {
-    background: transparent;
-    border: 1.5px solid rgba(255,255,255,0.4);
-    color: var(--white);
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    cursor: pointer;
-    font-family: var(--font-main);
-    transition: background 0.2s;
-  }
-
-  .btn-logout:hover { background: rgba(255,255,255,0.15); }
-
-  .app-container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-  }
-
-  .page-header {
-    margin-bottom: 2rem;
-  }
-
-  .page-header h1 {
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 4px;
-  }
-
-  .page-header p {
-    font-size: 0.88rem;
-    color: var(--gray-500);
-  }
-
-  /* ===== SECTIONS ===== */
-  .section-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    margin-bottom: 1.4rem;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--gray-200);
-    overflow: hidden;
-  }
-
-  .section-header {
-    background: var(--primary-light);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid var(--gray-200);
-  }
-
-  .section-icon {
-    width: 32px;
-    height: 32px;
-    background: var(--primary);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .section-title {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--primary);
-  }
-
-  .section-body {
-    padding: 20px;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 14px;
-  }
-
-  .form-row.cols-1 { grid-template-columns: 1fr; }
-  .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
-  .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-  .form-row.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-
-  .form-group.full { grid-column: 1 / -1; }
-
-  .form-group label .required {
-    color: var(--accent);
-    margin-left: 2px;
-  }
-
-  .field-hint {
-    font-size: 0.74rem;
-    color: var(--gray-400);
-    margin-top: 3px;
-  }
-
-  /* ===== PURCHASING SECTION ===== */
-  .company-toggle-row {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-
-  .company-cb-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--gray-50);
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 10px 18px;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    user-select: none;
-  }
-
-  .company-cb-item:hover { border-color: var(--primary-mid); background: var(--primary-light); }
-  .company-cb-item input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
-  .company-cb-item .cb-label { font-size: 0.9rem; font-weight: 500; color: var(--gray-700); }
-  .company-cb-item .cb-sub { font-size: 0.75rem; color: var(--gray-400); }
-  .company-cb-item.checked { border-color: var(--primary); background: var(--primary-light); }
-
-  .shared-fields-note {
-    font-size: 0.78rem;
-    color: var(--gray-500);
-    background: var(--warning-light);
-    border: 1px solid #fde68a;
-    border-radius: var(--radius-sm);
-    padding: 8px 14px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  /* ===== SUBMIT AREA ===== */
-  .submit-area {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    padding: 24px 28px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--gray-200);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .submit-info {
-    font-size: 0.85rem;
-    color: var(--gray-500);
-  }
-
-  .btn-submit {
-    padding: 12px 36px;
-    background: var(--accent);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    letter-spacing: 0.03em;
-    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(232,93,38,0.25);
-  }
-
-  .btn-submit:hover { background: #c94d1a; box-shadow: 0 4px 14px rgba(232,93,38,0.30); }
-  .btn-submit:active { transform: scale(0.98); }
-  .btn-submit:disabled { background: var(--gray-300); cursor: not-allowed; box-shadow: none; }
-
-  /* ===== TOAST ===== */
-  #toast {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    background: var(--gray-900);
-    color: var(--white);
-    padding: 14px 22px;
-    border-radius: var(--radius-md);
-    font-size: 0.9rem;
-    max-width: 380px;
-    box-shadow: var(--shadow-lg);
-    transform: translateY(80px);
-    opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    z-index: 999;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  #toast.show { transform: translateY(0); opacity: 1; }
-  #toast.success { background: var(--success); }
-  #toast.error { background: var(--danger); }
-
-  .toast-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-  .toast-body .toast-title { font-weight: 600; font-size: 0.92rem; }
-  .toast-body .toast-msg { font-size: 0.82rem; opacity: 0.9; margin-top: 3px; line-height: 1.4; }
-
-  /* ===== LOADING OVERLAY ===== */
-  #loading-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(15,23,42,0.55);
-    z-index: 998;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  #loading-overlay.show { display: flex; }
-
-  .spinner {
-    width: 44px; height: 44px;
-    border: 4px solid rgba(255,255,255,0.2);
-    border-top-color: var(--white);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-text {
-    color: var(--white);
-    font-size: 0.9rem;
-    font-family: var(--font-main);
-  }
-
-  /* ===== RESULT MODAL ===== */
-  #result-modal-wrapper {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(15,23,42,0.6);
-    z-index: 997;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  }
-
-  #result-modal-wrapper.show { display: flex; }
-
-  .result-modal {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    padding: 2.5rem 2rem;
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .result-icon-circle {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px;
-    margin: 0 auto 1.2rem;
-  }
-
-  .result-icon-circle.success { background: var(--success-light); color: var(--success); }
-  .result-icon-circle.error { background: var(--danger-light); color: var(--danger); }
-
-  .result-modal h2 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 8px; }
-  .result-modal .result-bp { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--primary); margin: 12px 0; }
-  .result-modal .result-msg { font-size: 0.9rem; color: var(--gray-500); line-height: 1.6; }
-  .result-modal .result-detail { background: var(--gray-50); border-radius: var(--radius-sm); padding: 10px 16px; font-size: 0.82rem; color: var(--gray-600); margin: 14px 0; text-align: left; }
-
-  .btn-close-modal {
-    margin-top: 1.2rem;
-    padding: 10px 32px;
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-display);
-    font-size: 0.92rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .btn-close-modal:hover { background: var(--primary-mid); }
-
-  @media (max-width: 640px) {
-    .form-row.cols-2, .form-row.cols-3, .form-row.cols-4 {
-      grid-template-columns: 1fr;
-    }
-    .top-bar { padding: 0 1rem; }
-    .app-container { padding: 1rem 1rem 3rem; }
-    .login-card { padding: 2rem 1.5rem; }
-  }
+:root{
+  --primary:#1a3a5c;--primary-light:#e8f0f9;--primary-mid:#2d5f9e;
+  --accent:#e85d26;--success:#16a34a;--success-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;
+  --info:#0891b2;--info-light:#e0f2fe;
+  --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;
+  --gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155;
+  --gray-800:#1e293b;--gray-900:#0f172a;--white:#fff;
+  --font-main:'Be Vietnam Pro',sans-serif;--font-display:'Space Grotesk',sans-serif;
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.10);--shadow-lg:0 8px 32px rgba(0,0,0,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-main);background:var(--gray-100);min-height:100vh;color:var(--gray-800);}
+
+/* ── LOGIN ── */
+#login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#1e293b 100%);padding:2rem;}
+.login-card{background:var(--white);border-radius:var(--radius-lg);padding:3rem;width:100%;max-width:440px;box-shadow:var(--shadow-lg);}
+.brand-name{font-family:var(--font-display);font-size:2.2rem;font-weight:600;color:var(--primary);letter-spacing:.12em;text-align:center;}
+.brand-sub{font-size:.78rem;color:var(--gray-400);letter-spacing:.15em;text-transform:uppercase;margin-top:2px;text-align:center;}
+.login-divider{width:48px;height:3px;background:var(--accent);margin:1.2rem auto;border-radius:2px;}
+.login-title{text-align:center;font-size:1rem;color:var(--gray-600);margin-bottom:2rem;}
+.login-note{text-align:center;font-size:.76rem;color:var(--gray-400);margin-top:1.5rem;}
+
+/* ── FORM BASE ── */
+.form-group{margin-bottom:1.1rem;}
+.form-group label{display:block;font-size:.82rem;font-weight:500;color:var(--gray-600);margin-bottom:5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 13px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font-main);font-size:.92rem;color:var(--gray-800);background:var(--white);transition:border-color .2s,box-shadow .2s;outline:none;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary-mid);box-shadow:0 0 0 3px rgba(45,95,158,.10);}
+.form-group input.error,.form-group select.error{border-color:var(--danger);}
+.form-group input[readonly]{background:var(--gray-50);color:var(--gray-500);cursor:not-allowed;}
+.error-msg{font-size:.78rem;color:var(--danger);margin-top:3px;display:none;}
+.error-msg.show{display:block;}
+.field-hint{font-size:.74rem;color:var(--gray-400);margin-top:3px;}
+.required{color:var(--accent);margin-left:2px;}
+.btn-primary{width:100%;padding:12px;background:var(--primary);color:var(--white);border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.95rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .2s,transform .1s;margin-top:.5rem;}
+.btn-primary:hover{background:var(--primary-mid);}
+.btn-primary:active{transform:scale(.98);}
+
+/* ── TOP BAR ── */
+#app-page{display:none;}
+.top-bar{background:var(--primary);color:var(--white);padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-md);position:sticky;top:0;z-index:100;}
+.top-bar-brand{font-family:var(--font-display);font-size:1.15rem;font-weight:600;letter-spacing:.1em;}
+.top-bar-right{display:flex;align-items:center;gap:12px;font-size:.85rem;}
+.user-pill{background:rgba(255,255,255,.15);padding:5px 14px;border-radius:20px;font-size:.82rem;}
+.badge-admin{background:#e85d26;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.05em;}
+.btn-logout{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:var(--white);padding:5px 14px;border-radius:20px;font-size:.82rem;cursor:pointer;font-family:var(--font-main);transition:background .2s;}
+.btn-logout:hover{background:rgba(255,255,255,.15);}
+
+/* ── TABS ── */
+.tab-bar{background:var(--white);border-bottom:2px solid var(--gray-200);display:flex;padding:0 2rem;overflow-x:auto;}
+.tab-item{padding:14px 20px;font-size:.88rem;font-weight:500;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .2s,border-color .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.tab-item:hover{color:var(--primary);}
+.tab-item.active{color:var(--primary);border-bottom-color:var(--primary);}
+.tab-badge{background:var(--accent);color:#fff;font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:10px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ── LAYOUT ── */
+.app-container{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.page-header{margin-bottom:1.8rem;}
+.page-header h1{font-family:var(--font-display);font-size:1.5rem;font-weight:600;color:var(--primary);margin-bottom:4px;}
+.page-header p{font-size:.88rem;color:var(--gray-500);}
+
+/* ── SECTION CARDS ── */
+.section-card{background:var(--white);border-radius:var(--radius-lg);margin-bottom:1.3rem;box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);overflow:hidden;}
+.section-header{background:var(--primary-light);padding:13px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--gray-200);}
+.section-icon{width:30px;height:30px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:13px;flex-shrink:0;}
+.section-title{font-family:var(--font-display);font-size:.92rem;font-weight:600;color:var(--primary);}
+.section-body{padding:18px 20px;}
+.form-row{display:grid;gap:12px;margin-bottom:12px;}
+.form-row.cols-1{grid-template-columns:1fr;}
+.form-row.cols-2{grid-template-columns:1fr 1fr;}
+.form-row.cols-3{grid-template-columns:1fr 1fr 1fr;}
+.form-row.cols-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+
+/* ── TAX EXTRA ── */
+.tax-extra-row{background:var(--gray-50);border:1px dashed var(--gray-300);border-radius:var(--radius-md);padding:14px 16px;margin-top:10px;}
+.tax-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.tax-row-title{font-size:.8rem;font-weight:600;color:var(--gray-600);display:flex;align-items:center;gap:6px;}
+.btn-add-tax{display:flex;align-items:center;gap:6px;background:var(--primary-light);border:1px solid var(--primary-mid);color:var(--primary);padding:7px 14px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;cursor:pointer;transition:background .2s;font-family:var(--font-main);}
+.btn-add-tax:hover{background:#d0e3f5;}
+.btn-remove-tax{background:transparent;border:none;color:var(--gray-400);font-size:1.1rem;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .2s,background .2s;}
+.btn-remove-tax:hover{color:var(--danger);background:var(--danger-light);}
+
+/* ── PURCHASING ── */
+.company-toggle-row{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.company-cb-item{display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px 18px;cursor:pointer;transition:border-color .2s,background .2s;user-select:none;}
+.company-cb-item:hover{border-color:var(--primary-mid);background:var(--primary-light);}
+.company-cb-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:pointer;}
+.company-cb-item .cb-label{font-size:.9rem;font-weight:500;color:var(--gray-700);}
+.company-cb-item .cb-sub{font-size:.75rem;color:var(--gray-400);}
+.company-cb-item.checked{border-color:var(--primary);background:var(--primary-light);}
+.shared-fields-note{font-size:.78rem;color:var(--gray-600);background:var(--warning-light);border:1px solid #fde68a;border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:14px;}
+
+/* ── SUBMIT ── */
+.submit-area{background:var(--white);border-radius:var(--radius-lg);padding:22px 26px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.submit-info{font-size:.85rem;color:var(--gray-500);}
+.btn-submit{padding:12px 34px;background:var(--accent);color:var(--white);border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.98rem;font-weight:600;cursor:pointer;letter-spacing:.03em;transition:background .2s,transform .1s;box-shadow:0 2px 8px rgba(232,93,38,.25);}
+.btn-submit:hover{background:#c94d1a;}
+.btn-submit:active{transform:scale(.98);}
+.btn-submit:disabled{background:var(--gray-300);cursor:not-allowed;box-shadow:none;}
+
+/* ── FILTER BAR (admin) ── */
+.filter-bar{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--gray-200);padding:14px 20px;margin-bottom:1.2rem;display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow-sm);}
+.filter-bar input[type=text]{flex:1;min-width:180px;padding:9px 13px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font-main);font-size:.88rem;outline:none;transition:border-color .2s;}
+.filter-bar input[type=text]:focus{border-color:var(--primary-mid);}
+.filter-btn-group{display:flex;gap:6px;flex-wrap:wrap;}
+.filter-btn{padding:7px 16px;border-radius:20px;font-size:.8rem;font-weight:500;cursor:pointer;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-family:var(--font-main);transition:all .2s;}
+.filter-btn:hover{border-color:var(--primary-mid);color:var(--primary);}
+.filter-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.filter-btn.f-pending.active{background:#d97706;border-color:#d97706;}
+.filter-btn.f-approved.active{background:var(--success);border-color:var(--success);}
+.filter-btn.f-rejected.active{background:var(--danger);border-color:var(--danger);}
+.filter-count{font-size:.78rem;color:var(--gray-400);white-space:nowrap;margin-left:auto;}
+
+/* ── REQUEST CARDS ── */
+.queue-empty{text-align:center;padding:4rem 2rem;color:var(--gray-400);}
+.queue-empty .empty-icon{font-size:3rem;margin-bottom:12px;}
+.request-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--gray-200);box-shadow:var(--shadow-sm);margin-bottom:1rem;overflow:hidden;transition:box-shadow .2s;}
+.request-card:hover{box-shadow:var(--shadow-md);}
+.request-card-header{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-200);background:var(--gray-50);cursor:pointer;gap:10px;}
+.request-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.request-id{font-family:var(--font-display);font-size:.85rem;font-weight:600;color:var(--primary);}
+.request-submitter{font-size:.8rem;color:var(--gray-500);}
+.request-time{font-size:.78rem;color:var(--gray-400);}
+.request-name{font-size:.88rem;font-weight:600;color:var(--gray-800);}
+.status-badge{padding:4px 12px;border-radius:12px;font-size:.75rem;font-weight:600;white-space:nowrap;flex-shrink:0;}
+.status-pending{background:#fef3c7;color:#92400e;}
+.status-approved{background:var(--success-light);color:#14532d;}
+.status-rejected{background:var(--danger-light);color:#7f1d1d;}
+
+/* ── VIEW BODY ── */
+.request-body{padding:18px 20px;}
+.view-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.view-field{padding:8px 0;border-bottom:1px solid var(--gray-100);}
+.view-label{font-size:.73rem;color:var(--gray-400);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;}
+.view-value{font-size:.9rem;color:var(--gray-800);font-weight:500;}
+.view-value.empty{color:var(--gray-300);font-style:italic;font-weight:400;}
+.view-section-title{font-size:.77rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--primary-light);}
+.view-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.view-tag{background:var(--primary-light);color:var(--primary);font-size:.78rem;padding:3px 10px;border-radius:10px;font-weight:500;}
+
+/* reject reason box inside view */
+.reject-reason-box{background:var(--danger-light);border:1px solid #fca5a5;border-radius:var(--radius-sm);padding:10px 14px;margin-top:12px;}
+.reject-reason-box .rrb-label{font-size:.75rem;font-weight:600;color:var(--danger);margin-bottom:4px;}
+.reject-reason-box .rrb-text{font-size:.9rem;color:#7f1d1d;}
+
+/* ── ACTIONS ── */
+.request-actions{display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--gray-200);background:var(--gray-50);flex-wrap:wrap;align-items:center;}
+.btn-approve{padding:9px 22px;background:var(--success);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-approve:hover{background:#15803d;}
+.btn-reject{padding:9px 22px;background:var(--white);color:var(--danger);border:1.5px solid var(--danger);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-reject:hover{background:var(--danger-light);}
+.btn-edit-req{padding:9px 22px;background:var(--white);color:var(--primary);border:1.5px solid var(--primary);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-edit-req:hover{background:var(--primary-light);}
+.btn-collapse{padding:9px 18px;background:var(--white);color:var(--gray-500);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.85rem;cursor:pointer;margin-left:auto;}
+
+/* ── EDIT PANEL ── */
+.edit-panel{display:none;padding:20px;border-top:2px solid var(--primary-light);background:#fdfdff;}
+.edit-panel.open{display:block;}
+.edit-panel-title{font-family:var(--font-display);font-size:.92rem;font-weight:600;color:var(--primary);margin-bottom:16px;}
+.btn-save-edit{padding:9px 24px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-save-edit:hover{background:var(--primary-mid);}
+.btn-cancel-edit{padding:9px 20px;background:var(--white);color:var(--gray-600);border:1.5px solid var(--gray-300);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;cursor:pointer;margin-left:8px;}
+
+/* ── REJECT MODAL ── */
+#reject-modal-wrapper{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:996;align-items:center;justify-content:center;padding:1rem;}
+#reject-modal-wrapper.show{display:flex;}
+.reject-modal{background:var(--white);border-radius:var(--radius-lg);padding:2rem;max-width:460px;width:100%;box-shadow:var(--shadow-lg);}
+.reject-modal h3{font-family:var(--font-display);font-size:1.1rem;color:var(--danger);margin-bottom:6px;}
+.reject-modal p{font-size:.88rem;color:var(--gray-500);margin-bottom:16px;}
+.reject-modal textarea{width:100%;padding:10px 13px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font-main);font-size:.9rem;resize:vertical;min-height:90px;outline:none;transition:border-color .2s;}
+.reject-modal textarea:focus{border-color:var(--danger);box-shadow:0 0 0 3px rgba(220,38,38,.08);}
+.reject-modal-actions{display:flex;gap:10px;margin-top:14px;justify-content:flex-end;}
+.btn-confirm-reject{padding:9px 22px;background:var(--danger);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;font-weight:600;cursor:pointer;}
+.btn-cancel-reject{padding:9px 18px;background:var(--white);color:var(--gray-600);border:1.5px solid var(--gray-300);border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.88rem;cursor:pointer;}
+
+/* ── MY REQUESTS ── */
+.my-req-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--gray-200);box-shadow:var(--shadow-sm);margin-bottom:.9rem;padding:16px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.my-req-info{flex:1;min-width:0;}
+.my-req-name{font-size:.95rem;font-weight:600;color:var(--gray-800);margin-bottom:3px;}
+.my-req-sub{font-size:.78rem;color:var(--gray-400);margin-bottom:6px;}
+.my-req-reject-reason{font-size:.82rem;color:var(--danger);background:var(--danger-light);padding:6px 10px;border-radius:var(--radius-sm);margin-top:6px;border-left:3px solid var(--danger);}
+
+/* ── EMAILJS SETUP NOTICE ── */
+.emailjs-notice{background:var(--info-light);border:1px solid #7dd3fc;border-radius:var(--radius-md);padding:12px 16px;margin-bottom:1.2rem;font-size:.82rem;color:#0c4a6e;display:flex;gap:10px;align-items:flex-start;}
+.emailjs-notice .en-icon{font-size:1.1rem;flex-shrink:0;}
+.emailjs-notice a{color:var(--info);font-weight:600;}
+
+/* ── LOADING / TOAST / MODAL ── */
+#loading-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:998;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+#loading-overlay.show{display:flex;}
+.spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,.2);border-top-color:var(--white);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{color:var(--white);font-size:.9rem;}
+#toast{position:fixed;bottom:28px;right:28px;background:var(--gray-900);color:var(--white);padding:14px 20px;border-radius:var(--radius-md);font-size:.9rem;max-width:380px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:transform .3s,opacity .3s;z-index:999;display:flex;align-items:flex-start;gap:12px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.success{background:var(--success);}
+#toast.error{background:var(--danger);}
+#toast.info{background:var(--info);}
+.toast-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.toast-title{font-weight:600;font-size:.92rem;}
+.toast-msg{font-size:.82rem;opacity:.9;margin-top:3px;line-height:1.4;}
+#result-modal-wrapper{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:997;align-items:center;justify-content:center;padding:1rem;}
+#result-modal-wrapper.show{display:flex;}
+.result-modal{background:var(--white);border-radius:var(--radius-lg);padding:2.5rem 2rem;max-width:480px;width:100%;text-align:center;box-shadow:var(--shadow-lg);}
+.result-icon-circle{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 1rem;}
+.result-icon-circle.success{background:var(--success-light);color:var(--success);}
+.result-icon-circle.error{background:var(--danger-light);color:var(--danger);}
+.result-icon-circle.info{background:var(--primary-light);color:var(--primary);}
+.result-modal h2{font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px;}
+.result-msg{font-size:.9rem;color:var(--gray-500);line-height:1.7;}
+.btn-close-modal{margin-top:1.2rem;padding:10px 32px;background:var(--primary);color:var(--white);border:none;border-radius:var(--radius-sm);font-family:var(--font-display);font-size:.92rem;cursor:pointer;transition:background .2s;}
+.btn-close-modal:hover{background:var(--primary-mid);}
+
+@media(max-width:640px){
+  .form-row.cols-2,.form-row.cols-3,.form-row.cols-4{grid-template-columns:1fr;}
+  .view-grid{grid-template-columns:1fr;}
+  .top-bar,.app-container{padding-left:1rem;padding-right:1rem;}
+  .tab-item{padding:12px 12px;font-size:.82rem;}
+  .filter-bar{gap:8px;}
+}
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN PAGE ===== -->
+<!-- ═══ LOGIN ═══ -->
 <div id="login-page">
   <div class="login-card">
-    <div class="login-logo">
-      <div class="brand-name">LOF</div>
-      <div class="brand-sub">Vendor Portal</div>
-      <div class="login-divider"></div>
-    </div>
-    <div class="login-title">Đăng nhập bằng email công ty để tiếp tục</div>
-
+    <div class="brand-name">LOF</div>
+    <div class="brand-sub">Vendor Portal</div>
+    <div class="login-divider"></div>
+    <div class="login-title">Đăng nhập bằng email công ty</div>
     <div class="form-group">
       <label>Email công ty</label>
-      <input type="email" id="login-email" placeholder="nguyenvana@lof.vn" autocomplete="email">
+      <input type="email" id="login-email" placeholder="nguyenvana@lof.vn">
       <div class="error-msg" id="email-err">Vui lòng sử dụng email @lof.vn của công ty.</div>
     </div>
     <div class="form-group">
       <label>Mật khẩu</label>
-      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
-      <div class="error-msg" id="pass-err">Vui lòng nhập mật khẩu.</div>
+      <input type="password" id="login-password" placeholder="••••••••">
+      <div class="error-msg" id="pass-err">Mật khẩu không đúng.</div>
     </div>
-
-    <button class="btn-primary" id="btn-login" onclick="doLogin()">Đăng nhập</button>
+    <button class="btn-primary" onclick="doLogin()">Đăng nhập</button>
     <div class="login-note">Chỉ dành cho nhân viên LOF · @lof.vn</div>
   </div>
 </div>
 
-<!-- ===== MAIN APP ===== -->
+<!-- ═══ APP ═══ -->
 <div id="app-page">
   <div class="top-bar">
-    <div class="top-bar-brand">LOF · Vendor Registration</div>
+    <div class="top-bar-brand">LOF · Vendor Portal</div>
     <div class="top-bar-right">
-      <span class="user-pill" id="user-display">user@lof.vn</span>
+      <span id="admin-badge" class="badge-admin" style="display:none;">ADMIN</span>
+      <span class="user-pill" id="user-display"></span>
       <button class="btn-logout" onclick="doLogout()">Đăng xuất</button>
     </div>
   </div>
 
-  <div class="app-container">
-    <div class="page-header">
-      <h1>Tạo mới Business Partner / Vendor</h1>
-      <p>Điền đầy đủ thông tin bên dưới và nhấn Gửi để tạo vendor trong hệ thống SAP.</p>
+  <div class="tab-bar">
+    <div class="tab-item active" id="tab-new" onclick="switchTab('new')">📝 Tạo yêu cầu mới</div>
+    <div class="tab-item" id="tab-mine" onclick="switchTab('mine')">📋 Yêu cầu của tôi</div>
+    <div class="tab-item" id="tab-approve" onclick="switchTab('approve')" style="display:none;">
+      ✅ Duyệt yêu cầu <span class="tab-badge" id="pending-count" style="display:none;">0</span>
     </div>
+  </div>
 
-    <!-- SECTION 1: THÔNG TIN CHUNG -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-icon">&#128194;</div>
-        <span class="section-title">1. Thông tin chung (General Information)</span>
+  <!-- ── TAB: TẠO MỚI ── -->
+  <div id="content-new" class="tab-content active">
+    <div class="app-container">
+      <div class="page-header">
+        <h1>Tạo mới Business Partner / Vendor</h1>
+        <p>Sau khi gửi, yêu cầu sẽ chuyển đến Approver để duyệt trước khi tạo vào SAP.</p>
       </div>
-      <div class="section-body">
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Grouping (BP Group) <span class="required">*</span></label>
-            <input type="text" id="GROUPING" placeholder="Z01" maxlength="4">
-            <div class="field-hint">Mã nhóm BP, tối đa 4 ký tự (VD: Z01)</div>
-            <div class="error-msg" id="GROUPING-err">Trường này bắt buộc.</div>
-          </div>
-          <div class="form-group">
-            <label>Search Term 1</label>
-            <input type="text" id="SEARCHTERM1" placeholder="ABCCOMPANY" maxlength="20">
-            <div class="field-hint">Từ khóa tìm kiếm, tối đa 20 ký tự</div>
-          </div>
-        </div>
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Tên công ty (Name 1) <span class="required">*</span></label>
-            <input type="text" id="NAME1" placeholder="ABC Company Ltd" maxlength="40">
-            <div class="error-msg" id="NAME1-err">Trường này bắt buộc.</div>
-          </div>
-          <div class="form-group">
-            <label>Tên 2 (Name 2)</label>
-            <input type="text" id="NAME2" placeholder="Vietnam Branch" maxlength="40">
-          </div>
-        </div>
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Tên 3 (Name 3)</label>
-            <input type="text" id="NAME3" placeholder="Trading Division" maxlength="40">
-          </div>
-          <div class="form-group">
-            <label>Tên 4 (Name 4)</label>
-            <input type="text" id="NAME4" placeholder="HCM Office" maxlength="40">
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- SECTION 2: ĐỊA CHỈ -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-icon">&#127968;</div>
-        <span class="section-title">2. Địa chỉ (Address)</span>
-      </div>
-      <div class="section-body">
-        <div class="form-row cols-3">
-          <div class="form-group">
-            <label>Quốc gia (Country) <span class="required">*</span></label>
-            <input type="text" id="COUNTRY" placeholder="VN" maxlength="3" value="VN">
-            <div class="field-hint">Mã ISO 2–3 ký tự</div>
-            <div class="error-msg" id="COUNTRY-err">Trường này bắt buộc.</div>
-          </div>
-          <div class="form-group">
-            <label>Tỉnh/Thành (Region)</label>
-            <input type="text" id="REGION" placeholder="127" maxlength="3">
-            <div class="field-hint">Mã vùng SAP (VD: 127 = HCM)</div>
-          </div>
-          <div class="form-group">
-            <label>Thành phố (City)</label>
-            <input type="text" id="CITY" placeholder="Ho Chi Minh City" maxlength="25">
-          </div>
-        </div>
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Đường (Street)</label>
-            <input type="text" id="STREET" placeholder="Nguyen Hue" maxlength="60">
-          </div>
-          <div class="form-group">
-            <label>Street Suppl. 1</label>
-            <input type="text" id="STREET2" placeholder="Floor 10" maxlength="40">
-          </div>
-        </div>
-        <div class="form-row cols-3">
-          <div class="form-group">
-            <label>Street Suppl. 2</label>
-            <input type="text" id="STREET3" placeholder="District 1" maxlength="40">
-          </div>
-          <div class="form-group">
-            <label>Street Suppl. 3</label>
-            <input type="text" id="STREET4" placeholder="Landmark Building" maxlength="40">
-          </div>
-          <div class="form-group">
-            <label>Location</label>
-            <input type="text" id="STREET5" placeholder="Near Opera House" maxlength="40">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 3: LIÊN LẠC -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-icon">&#128222;</div>
-        <span class="section-title">3. Thông tin liên lạc (Contact)</span>
-      </div>
-      <div class="section-body">
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Số điện thoại 1 (Phone 1)</label>
-            <input type="text" id="PHONE1" placeholder="0905111777" maxlength="30">
-          </div>
-          <div class="form-group">
-            <label>Số điện thoại 2 (Phone 2)</label>
-            <input type="text" id="PHONE2" placeholder="0905111779" maxlength="30">
-          </div>
-        </div>
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Email 1</label>
-            <input type="email" id="EMAIL1" placeholder="contact@company.vn">
-          </div>
-          <div class="form-group">
-            <label>Email 2</label>
-            <input type="email" id="EMAIL2" placeholder="info@company.vn">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 4: NGÀNH NGHỀ -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-icon">&#127959;</div>
-        <span class="section-title">4. Ngành nghề (Industry)</span>
-      </div>
-      <div class="section-body">
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Mã ngành (Industry Sector)</label>
-            <input type="text" id="IND_SECTOR" placeholder="Z01" maxlength="10">
-            <div class="field-hint">IND_DEFAULT sẽ tự động gán = 'X'</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 5: THUẾ -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-icon">&#128203;</div>
-        <span class="section-title">5. Thông tin thuế (Tax)</span>
-      </div>
-      <div class="section-body">
-        <div class="form-row cols-2">
-          <div class="form-group">
-            <label>Loại thuế (Tax Type)</label>
-            <input type="text" id="TAXTYPE" placeholder="VN0" maxlength="4">
-            <div class="field-hint">Ví dụ: VN0</div>
-          </div>
-          <div class="form-group">
-            <label>Mã số thuế (Tax Number)</label>
-            <input type="text" id="TAXNUM" placeholder="0601242014" maxlength="20">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 6: NGÂN HÀNG -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-icon">&#127981;</div>
-        <span class="section-title">6. Thông tin ngân hàng (Bank Detail)</span>
-      </div>
-      <div class="section-body">
-        <div class="form-row cols-4">
-          <div class="form-group">
-            <label>Data Key</label>
-            <input type="text" id="BANK_DATA_KEY" placeholder="0001" maxlength="4">
-            <div class="field-hint">Tối đa 4 ký tự</div>
-          </div>
-          <div class="form-group">
-            <label>Bank Country</label>
-            <input type="text" id="BANK_CTRY" placeholder="VN" maxlength="3" value="VN">
-          </div>
-          <div class="form-group">
-            <label>Bank Key</label>
-            <input type="text" id="BANK_KEY" placeholder="MBBB0107" maxlength="15">
-            <div class="field-hint">Swift / mã ngân hàng SAP</div>
-          </div>
-          <div class="form-group">
-            <label>Số tài khoản</label>
-            <input type="text" id="BANK_ACCT" placeholder="1133336688" maxlength="18">
-          </div>
-        </div>
-        <div class="form-row cols-1">
-          <div class="form-group">
-            <label>Chủ tài khoản (Account Holder)</label>
-            <input type="text" id="ACCOUNTHOLDER" placeholder="ABC Company Ltd" maxlength="60">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 7: PURCHASING -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-icon">&#128176;</div>
-        <span class="section-title">7. Thông tin mua hàng (Purchasing / Company Code)</span>
-      </div>
-      <div class="section-body">
-
-        <div style="margin-bottom:14px; font-size:0.85rem; font-weight:500; color:var(--gray-700);">
-          Chọn Company Code áp dụng <span class="required">*</span>
-        </div>
-        <div class="company-toggle-row">
-          <label class="company-cb-item" id="cb-1000-label">
-            <input type="checkbox" id="CB_CC_1000" value="1000" onchange="toggleCompany(this)">
-            <div>
-              <div class="cb-label">1000</div>
-              <div class="cb-sub">Company Code 1000</div>
+      <!-- S1 -->
+      <div class="section-card">
+        <div class="section-header"><div class="section-icon">📁</div><span class="section-title">1. Thông tin chung</span></div>
+        <div class="section-body">
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label>Grouping (BP Group)</label>
+              <input type="text" id="GROUPING" value="Z01" readonly>
+              <div class="field-hint">Mặc định Z01 – không thể chỉnh sửa</div>
             </div>
-          </label>
-          <label class="company-cb-item" id="cb-2000-label">
-            <input type="checkbox" id="CB_CC_2000" value="2000" onchange="toggleCompany(this)">
-            <div>
-              <div class="cb-label">2000</div>
-              <div class="cb-sub">Company Code 2000</div>
+            <div class="form-group">
+              <label>Search Term 1</label>
+              <input type="text" id="SEARCHTERM1" placeholder="ABCCOMPANY" maxlength="20">
+              <div class="field-hint">Tối đa 20 ký tự</div>
             </div>
-          </label>
-        </div>
-
-        <div class="shared-fields-note">
-          &#9432; Các trường bên dưới áp dụng chung cho tất cả Company Code đã chọn.
-        </div>
-
-        <div class="form-row cols-3">
-          <div class="form-group">
-            <label>Tiền tệ (Currency)</label>
-            <input type="text" id="PUR_CURRENCY" placeholder="VND" maxlength="5" value="VND">
           </div>
-          <div class="form-group">
-            <label>Payment Terms</label>
-            <input type="text" id="PUR_PAYTERM" placeholder="Z030" maxlength="4">
-            <div class="field-hint">VD: Z030, Z060</div>
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label>Tên công ty (Name 1) <span class="required">*</span></label>
+              <input type="text" id="NAME1" placeholder="ABC Company Ltd" maxlength="40">
+              <div class="field-hint">Tối đa 40 ký tự</div>
+              <div class="error-msg" id="NAME1-err">Trường này bắt buộc.</div>
+            </div>
+            <div class="form-group">
+              <label>Tên 2 (Name 2)</label>
+              <input type="text" id="NAME2" placeholder="Vietnam Branch" maxlength="40">
+              <div class="field-hint">Tối đa 40 ký tự</div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Schema Group</label>
-            <input type="text" id="PUR_SCHEMA_GRP" placeholder="Z1" maxlength="2">
-          </div>
-        </div>
-        <div class="form-row cols-3">
-          <div class="form-group">
-            <label>Payment Method</label>
-            <input type="text" id="PUR_PAYMETHOD" placeholder="C" maxlength="10">
-            <div class="field-hint">VD: C (Séc), T (Chuyển khoản)</div>
-          </div>
-          <div class="form-group">
-            <label>Planning Group</label>
-            <input type="text" id="PUR_PLANNING_GRP" placeholder="ZV11" maxlength="10">
-          </div>
-          <div class="form-group">
-            <label>Recon. Account (AKONT)</label>
-            <input type="text" id="PUR_AKONT" placeholder="0033111101" maxlength="10">
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label>Tên 3 (Name 3)</label>
+              <input type="text" id="NAME3" placeholder="Trading Division" maxlength="40">
+            </div>
+            <div class="form-group">
+              <label>Tên 4 (Name 4)</label>
+              <input type="text" id="NAME4" placeholder="HCM Office" maxlength="40">
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- SUBMIT -->
-    <div class="submit-area">
-      <div class="submit-info">
-        Dữ liệu sẽ được gửi trực tiếp vào SAP qua REST API.<br>
-        <span style="color:var(--warning);font-weight:500;">Kiểm tra kỹ trước khi gửi — không thể hoàn tác tự động.</span>
+      <!-- S2 -->
+      <div class="section-card">
+        <div class="section-header"><div class="section-icon">🏠</div><span class="section-title">2. Địa chỉ</span></div>
+        <div class="section-body">
+          <div class="form-row cols-3">
+            <div class="form-group">
+              <label>Quốc gia (Country) <span class="required">*</span></label>
+              <input type="text" id="COUNTRY" value="VN" maxlength="3">
+              <div class="error-msg" id="COUNTRY-err">Trường này bắt buộc.</div>
+            </div>
+            <div class="form-group">
+              <label>Tỉnh/Thành (Region)</label>
+              <input type="text" id="REGION" placeholder="127" maxlength="3">
+              <div class="field-hint">VD: 127 = HCM</div>
+            </div>
+            <div class="form-group">
+              <label>Thành phố (City)</label>
+              <input type="text" id="CITY" placeholder="Ho Chi Minh City" maxlength="25">
+              <div class="field-hint">Tối đa 25 ký tự</div>
+            </div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label>Đường (Street)</label>
+              <input type="text" id="STREET" placeholder="Nguyen Hue" maxlength="60">
+              <div class="field-hint">Tối đa 60 ký tự</div>
+            </div>
+            <div class="form-group">
+              <label>Street Suppl. 1</label>
+              <input type="text" id="STREET2" placeholder="Floor 10" maxlength="40">
+            </div>
+          </div>
+          <div class="form-row cols-3">
+            <div class="form-group"><label>Street Suppl. 2</label><input type="text" id="STREET3" placeholder="District 1" maxlength="40"></div>
+            <div class="form-group"><label>Street Suppl. 3</label><input type="text" id="STREET4" placeholder="Landmark Building" maxlength="40"></div>
+            <div class="form-group"><label>Location</label><input type="text" id="STREET5" placeholder="Near Opera House" maxlength="40"></div>
+          </div>
+        </div>
       </div>
-      <button class="btn-submit" id="btn-submit" onclick="submitForm()">
-        &#128228; Gửi tạo Vendor
-      </button>
-    </div>
 
-  </div><!-- /app-container -->
-</div><!-- /app-page -->
+      <!-- S3 -->
+      <div class="section-card">
+        <div class="section-header"><div class="section-icon">📞</div><span class="section-title">3. Thông tin liên lạc</span></div>
+        <div class="section-body">
+          <div class="form-row cols-2">
+            <div class="form-group"><label>Số điện thoại 1</label><input type="text" id="PHONE1" placeholder="0905111777" maxlength="30"></div>
+            <div class="form-group"><label>Số điện thoại 2</label><input type="text" id="PHONE2" placeholder="0905111779" maxlength="30"></div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="form-group"><label>Email 1</label><input type="email" id="EMAIL1" placeholder="contact@company.vn" maxlength="100"></div>
+            <div class="form-group"><label>Email 2</label><input type="email" id="EMAIL2" placeholder="info@company.vn" maxlength="100"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S4 -->
+      <div class="section-card">
+        <div class="section-header"><div class="section-icon">🏗</div><span class="section-title">4. Ngành nghề (Industry)</span></div>
+        <div class="section-body">
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label>Mã ngành (Industry Sector)</label>
+              <select id="IND_SECTOR">
+                <option value="">-- Chọn ngành nghề --</option>
+                <option value="Z01">Z01 – Nhà cung cấp nguyên liệu</option>
+                <option value="Z02">Z02 – Nhà cung cấp nhiên liệu</option>
+                <option value="Z03">Z03 – Nhà cung cấp hoá chất</option>
+                <option value="Z04">Z04 – Nhà cung cấp bao bì</option>
+                <option value="Z05">Z05 – Nhà cung cấp linh kiện, phụ tùng</option>
+                <option value="Z06">Z06 – Nhà cung cấp thuốc thú ý</option>
+                <option value="Z07">Z07 – Nhà cung cấp dụng cụ thú ý</option>
+                <option value="Z08">Z08 – Nhà cung cấp thức ăn chăn nuôi</option>
+                <option value="Z09">Z09 – Nhà cung cấp OEM</option>
+                <option value="Z10">Z10 – Nhà cung cấp hàng hoá</option>
+                <option value="Z11">Z11 – Nhà cung cấp sản phẩm TOT/POSM</option>
+                <option value="Z12">Z12 – Nhà cung cấp dịch vụ logistics</option>
+                <option value="Z13">Z13 – Nhà cung cấp dịch vụ bảo trì/bảo dưỡng</option>
+                <option value="Z14">Z14 – Nhà cung cấp dịch vụ khác</option>
+                <option value="Z15">Z15 – Dịch vụ thu mua sữa tươi (Trạm)</option>
+                <option value="Z16">Z16 – Sữa tươi (Nông hộ)</option>
+                <option value="Z99">Z99 – Nhà cung cấp thuộc nhóm ngành nghề khác</option>
+              </select>
+              <div class="field-hint">IND_DEFAULT tự động gán = 'X'</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S5 -->
+      <div class="section-card">
+        <div class="section-header"><div class="section-icon">📋</div><span class="section-title">5. Thông tin thuế (Tax)</span></div>
+        <div class="section-body">
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label>Loại thuế (Tax Type)</label>
+              <input type="text" id="TAXTYPE" placeholder="VN0" maxlength="4">
+              <div class="field-hint">Tối đa 4 ký tự</div>
+            </div>
+            <div class="form-group">
+              <label>Mã số thuế (Tax Number)</label>
+              <input type="text" id="TAXNUM" placeholder="0601242014" maxlength="20">
+              <div class="field-hint">Tối đa 20 ký tự</div>
+            </div>
+          </div>
+          <div id="tax-extra-container"></div>
+          <button class="btn-add-tax" id="btn-add-tax-row" onclick="addTaxRow()">
+            <span style="font-size:1.1rem;font-weight:700;">＋</span> Thêm mã số thuế khác
+          </button>
+        </div>
+      </div>
+
+      <!-- S6 -->
+      <div class="section-card">
+        <div class="section-header"><div class="section-icon">🏦</div><span class="section-title">6. Thông tin ngân hàng</span></div>
+        <div class="section-body">
+          <div class="form-row cols-4">
+            <div class="form-group"><label>Data Key</label><input type="text" id="BANK_DATA_KEY" placeholder="0001" maxlength="4"><div class="field-hint">Tối đa 4 ký tự</div></div>
+            <div class="form-group"><label>Bank Country</label><input type="text" id="BANK_CTRY" value="VN" maxlength="3"></div>
+            <div class="form-group"><label>Bank Key</label><input type="text" id="BANK_KEY" placeholder="MBBB0107" maxlength="15"><div class="field-hint">Tối đa 15 ký tự</div></div>
+            <div class="form-group"><label>Số tài khoản</label><input type="text" id="BANK_ACCT" placeholder="1133336688" maxlength="18"><div class="field-hint">Tối đa 18 ký tự</div></div>
+          </div>
+          <div class="form-row cols-1">
+            <div class="form-group"><label>Chủ tài khoản (Account Holder)</label><input type="text" id="ACCOUNTHOLDER" placeholder="ABC Company Ltd" maxlength="60"><div class="field-hint">Tối đa 60 ký tự</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S7 -->
+      <div class="section-card">
+        <div class="section-header"><div class="section-icon">💰</div><span class="section-title">7. Thông tin mua hàng (Purchasing)</span></div>
+        <div class="section-body">
+          <div style="margin-bottom:12px;font-size:.85rem;font-weight:500;color:var(--gray-700);">Chọn Company Code áp dụng <span class="required">*</span></div>
+          <div class="company-toggle-row">
+            <label class="company-cb-item" id="cb-1000-label">
+              <input type="checkbox" id="CB_CC_1000" value="1000" onchange="toggleCompany(this)">
+              <div><div class="cb-label">1000</div><div class="cb-sub">Company Code 1000</div></div>
+            </label>
+            <label class="company-cb-item" id="cb-2000-label">
+              <input type="checkbox" id="CB_CC_2000" value="2000" onchange="toggleCompany(this)">
+              <div><div class="cb-label">2000</div><div class="cb-sub">Company Code 2000</div></div>
+            </label>
+          </div>
+          <div class="shared-fields-note">ℹ Các trường bên dưới áp dụng chung cho tất cả Company Code đã chọn.</div>
+          <div class="form-row cols-3">
+            <div class="form-group"><label>Tiền tệ (Currency)</label><input type="text" id="PUR_CURRENCY" value="VND" maxlength="5"></div>
+            <div class="form-group">
+              <label>Payment Terms</label>
+              <select id="PUR_PAYTERM">
+                <option value="">-- Chọn điều khoản TT --</option>
+                <option value="Z001">Z001 – Prepayment</option>
+                <option value="Z002">Z002 – Immediately / Cash on delivery</option>
+                <option value="Z005">Z005 – Within 5 days due net</option>
+                <option value="Z007">Z007 – Within 7 days due net</option>
+                <option value="Z010">Z010 – Within 10 days due net</option>
+                <option value="Z015">Z015 – Within 15 days due net</option>
+                <option value="Z020">Z020 – Within 20 days due net</option>
+                <option value="Z025">Z025 – Within 25 days due net</option>
+                <option value="Z030">Z030 – Within 30 days due net</option>
+                <option value="Z035">Z035 – Within 35 days due net</option>
+                <option value="Z040">Z040 – Within 40 days due net</option>
+                <option value="Z045">Z045 – Within 45 days due net</option>
+                <option value="Z050">Z050 – Within 50 days due net</option>
+                <option value="Z055">Z055 – Within 55 days due net</option>
+                <option value="Z060">Z060 – Within 60 days due net</option>
+                <option value="Z065">Z065 – Within 65 days due net</option>
+                <option value="Z070">Z070 – Within 70 days due net</option>
+                <option value="Z075">Z075 – Within 75 days due net</option>
+                <option value="Z080">Z080 – Within 80 days due net</option>
+                <option value="Z085">Z085 – Within 85 days due net</option>
+                <option value="Z090">Z090 – Within 90 days due net</option>
+                <option value="Z100">Z100 – 30% for 40d / 70% for 45d</option>
+                <option value="ZM10">ZM10 – Payable immediately, baseline 10th</option>
+                <option value="ZM20">ZM20 – Payable immediately, baseline 20th</option>
+                <option value="ZM98">ZM98 – 45 days net with 25th next month</option>
+                <option value="ZM99">ZM99 – 45 days net with 15th next month</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Schema Group</label><input type="text" id="PUR_SCHEMA_GRP" placeholder="Z1" maxlength="2"><div class="field-hint">Tối đa 2 ký tự</div></div>
+          </div>
+          <div class="form-row cols-3">
+            <div class="form-group"><label>Payment Method</label><input type="text" id="PUR_PAYMETHOD" placeholder="C" maxlength="10"><div class="field-hint">Tối đa 10 ký tự</div></div>
+            <div class="form-group">
+              <label>Planning Group</label>
+              <select id="PUR_PLANNING_GRP">
+                <option value="">-- Chọn Planning Group --</option>
+                <option value="ZC01">ZC01 – KH_GT – Kênh GT</option>
+                <option value="ZC02">ZC02 – KH_KA – Kênh KA</option>
+                <option value="ZC03">ZC03 – KH_MT – Kênh MT</option>
+                <option value="ZC04">ZC04 – KH_ON – NPP kênh ON</option>
+                <option value="ZC05">ZC05 – KH_XK – Kênh xuất khẩu</option>
+                <option value="ZC06">ZC06 – KH_ECM – Kênh ECM</option>
+                <option value="ZC07">ZC07 – KH_NB – Bán lẻ nội bộ</option>
+                <option value="ZV01">ZV01 – NCC_VTKT – NCC Spare Parts</option>
+                <option value="ZV02">ZV02 – NCC_POSM – NCC POSM</option>
+                <option value="ZV03">ZV03 – NCC_NVL – NCC NVL</option>
+                <option value="ZV04">ZV04 – NCC_BB – NCC bao bì</option>
+                <option value="ZV05">ZV05 – NCC_MKT – NCC Marketing</option>
+                <option value="ZV06">ZV06 – NCC_DVK – NCC dịch vụ khác</option>
+                <option value="ZV07">ZV07 – NCC_VC – NCC vận chuyển</option>
+                <option value="ZV08">ZV08 – NCC_TSCĐ – NCC mua sắm TSCĐ</option>
+                <option value="ZV09">ZV09 – NCC_NV – Nhân viên</option>
+                <option value="ZV10">ZV10 – NCC_NB – NCC nội bộ</option>
+                <option value="ZV11">ZV11 – NCC_KHAC – NCC khác</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Recon. Account (AKONT)</label>
+              <select id="PUR_AKONT">
+                <option value="">-- Chọn tài khoản đối chiếu --</option>
+                <option value="14110001">14110001 – Tạm ứng CB CNV</option>
+                <option value="24410001">24410001 – Ký quỹ ngắn hạn</option>
+                <option value="24420001">24420001 – Ký quỹ dài hạn</option>
+                <option value="33111101">33111101 – Phải trả người bán-trong nước</option>
+                <option value="33111201">33111201 – Phải trả người bán-trong nước-TS</option>
+                <option value="33112101">33112101 – Phải trả người bán-nước ngoài</option>
+                <option value="33112201">33112201 – Phải trả người bán-nước ngoài-TS</option>
+                <option value="33121101">33121101 – Trả trước người bán trong nước</option>
+                <option value="33121201">33121201 – Trả trước người bán trong nước-TS</option>
+                <option value="33122101">33122101 – Trả trước người bán nước ngoài</option>
+                <option value="33122201">33122201 – Trả trước người bán nước ngoài-TS</option>
+                <option value="33312001">33312001 – Thuế GTGT nhập khẩu</option>
+                <option value="33330001">33330001 – Thuế xuất nhập khẩu</option>
+                <option value="33681001">33681001 – Phải trả nhập thành phẩm nội bộ</option>
+                <option value="33881001">33881001 – Phải trả, phải nộp khác - Lãi vay</option>
+                <option value="33881002">33881002 – Phải trả, phải nộp khác - hàng gửi</option>
+                <option value="33882001">33882001 – Phải trả, phải nộp khác</option>
+                <option value="34111001">34111001 – Vay ngắn hạn-trong nước</option>
+                <option value="34111002">34111002 – Vay dài hạn-trong nước</option>
+                <option value="34112001">34112001 – Vay ngắn hạn-nước ngoài</option>
+                <option value="34112002">34112002 – Vay dài hạn-nước ngoài</option>
+                <option value="34121001">34121001 – Nợ thuê tài chính trong nước</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-area">
+        <div class="submit-info">Yêu cầu sẽ gửi đến Approver để duyệt.<br><span style="color:var(--warning);font-weight:500;">Kiểm tra kỹ trước khi gửi.</span></div>
+        <button class="btn-submit" id="btn-submit" onclick="submitForApproval()">📨 Gửi yêu cầu tạo Vendor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: YÊU CẦU CỦA TÔI ── -->
+  <div id="content-mine" class="tab-content">
+    <div class="app-container">
+      <div class="page-header"><h1>Yêu cầu của tôi</h1><p>Theo dõi trạng thái các yêu cầu tạo vendor bạn đã gửi.</p></div>
+      <div id="my-requests-list"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: DUYỆT ── -->
+  <div id="content-approve" class="tab-content">
+    <div class="app-container">
+      <div class="page-header"><h1>Duyệt yêu cầu Vendor</h1><p>Xem, chỉnh sửa và phê duyệt các yêu cầu tạo vendor.</p></div>
+
+      <!-- EmailJS setup notice -->
+      <div class="emailjs-notice">
+        <span class="en-icon">📧</span>
+        <div>
+          <strong>Cấu hình Email Notification:</strong> Tìm <code>EMAILJS_SERVICE_ID</code>, <code>EMAILJS_TEMPLATE_ID</code>, <code>EMAILJS_PUBLIC_KEY</code> trong file và thay bằng thông tin từ
+          <a href="https://www.emailjs.com" target="_blank">emailjs.com</a> (miễn phí, 200 email/tháng).
+          Khi chưa cấu hình, hệ thống vẫn hoạt động bình thường, chỉ bỏ qua bước gửi email.
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <input type="text" id="filter-search" placeholder="🔍 Tìm theo tên vendor, mã yêu cầu, người gửi..." oninput="applyFilter()">
+        <div class="filter-btn-group">
+          <button class="filter-btn active" id="fbtn-all" onclick="setFilter('all')">Tất cả</button>
+          <button class="filter-btn f-pending" id="fbtn-pending" onclick="setFilter('pending')">⏳ Chờ duyệt</button>
+          <button class="filter-btn f-approved" id="fbtn-approved" onclick="setFilter('approved')">✅ Đã duyệt</button>
+          <button class="filter-btn f-rejected" id="fbtn-rejected" onclick="setFilter('rejected')">❌ Từ chối</button>
+        </div>
+        <span class="filter-count" id="filter-count"></span>
+      </div>
+
+      <div id="approval-list"></div>
+    </div>
+  </div>
+</div>
 
 <!-- LOADING -->
-<div id="loading-overlay">
-  <div class="spinner"></div>
-  <div class="loading-text">Đang gửi dữ liệu lên SAP...</div>
-</div>
+<div id="loading-overlay"><div class="spinner"></div><div class="loading-text" id="loading-text">Đang xử lý...</div></div>
 
 <!-- RESULT MODAL -->
 <div id="result-modal-wrapper">
   <div class="result-modal">
     <div class="result-icon-circle" id="res-icon">✓</div>
-    <h2 id="res-title">Tạo thành công</h2>
-    <div class="result-bp" id="res-bp" style="display:none"></div>
+    <h2 id="res-title"></h2>
     <div class="result-msg" id="res-msg"></div>
-    <div class="result-detail" id="res-detail" style="display:none"></div>
     <button class="btn-close-modal" onclick="closeModal()">Đóng</button>
+  </div>
+</div>
+
+<!-- REJECT REASON MODAL -->
+<div id="reject-modal-wrapper">
+  <div class="reject-modal">
+    <h3>❌ Từ chối yêu cầu</h3>
+    <p>Nhập lý do từ chối. Lý do này sẽ được gửi email thông báo đến người tạo yêu cầu.</p>
+    <textarea id="reject-reason-input" placeholder="VD: Thông tin MST chưa chính xác. Vui lòng kiểm tra và gửi lại..."></textarea>
+    <div class="reject-modal-actions">
+      <button class="btn-cancel-reject" onclick="closeRejectModal()">Huỷ</button>
+      <button class="btn-confirm-reject" onclick="confirmReject()">Xác nhận từ chối</button>
+    </div>
   </div>
 </div>
 
@@ -870,304 +646,540 @@
 </div>
 
 <script>
-// ==========================================
-// CONFIG — THAY ĐỔI URL API SAP TẠI ĐÂY
-// ==========================================
+// ═══════════════════════════════════════════════
+// CONFIG — THAY ĐỔI CÁC GIÁ TRỊ NÀY
+// ═══════════════════════════════════════════════
 const SAP_API_URL = 'https://YOUR-SAP-HOST/sap/bc/rest/zrest_handler_bp_master';
-// Ví dụ: 'https://sap-prod.lof.vn:8443/sap/bc/rest/zrest_handler_bp_master'
+const SAP_CRED    = btoa('sapuser:sappassword');
 
-// ==========================================
-// AUTH — simple domain validation
-// ==========================================
+// EmailJS — đăng ký tại https://www.emailjs.com (miễn phí)
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // VD: 'service_abc123'
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // VD: 'template_xyz456'
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // VD: 'AbCdEfGhIjKlMnOp'
+// Email admin nhận thông báo khi có yêu cầu mới
+const ADMIN_EMAIL = 'admin@lof.vn';
+
+// Users cứng: admin@lof.vn / 123456
+const USERS = { 'admin@lof.vn': { pass:'123456', isAdmin:true } };
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let REQUESTS = [
+  {
+    id:'REQ-001', submitter:'nguyenvana@lof.vn',
+    submittedAt: new Date(Date.now()-3600000*2).toISOString(),
+    status:'pending', rejectReason:'',
+    data:{
+      GROUPING:'Z01',NAME1:'Công ty TNHH Mẫu Test',NAME2:'Chi nhánh HCM',NAME3:'',NAME4:'',
+      SEARCHTERM1:'MAUTEST',COUNTRY:'VN',REGION:'127',CITY:'Ho Chi Minh City',
+      STREET:'123 Nguyễn Huệ',STREET2:'Tầng 5',STREET3:'Quận 1',STREET4:'',STREET5:'',
+      PHONE_LINES:[{PHONE:'0901234567'}],EMAIL_LINES:[{EMAIL:'contact@mautest.vn'}],
+      INDUSTRY_LINES:[{IND_SECTOR:'Z03',IND_DEFAULT:'X'}],
+      TAX_LINES:[{TAXTYPE:'VN0',TAXNUM:'0312345678'}],
+      BANK_LINES:[{DATA_KEY:'0001',BANK_CTRY:'VN',BANK_KEY:'BIDVVNVX',BANK_ACCT:'12345678901',ACCOUNTHOLDER:'Công ty TNHH Mẫu Test'}],
+      PURCHASING_LINES:[
+        {PUR_ORG:'1000',COMPCODE:'1000',CURRENCY:'VND',PAYTERM:'Z030',SCHEMA_GRP:'Z1',PAYMETHOD:'C',PLANNING_GRP:'ZV03',AKONT:'33111101'},
+        {PUR_ORG:'2000',COMPCODE:'2000',CURRENCY:'VND',PAYTERM:'Z030',SCHEMA_GRP:'Z1',PAYMETHOD:'C',PLANNING_GRP:'ZV03',AKONT:'33111101'}
+      ]
+    }
+  }
+];
+
 let currentUser = null;
+let isAdmin     = false;
+let taxExtraCount = 0;
+let currentFilter = 'all';
+let rejectTargetId = null;
 
+// ═══════════════════════════════════════════════
+// EMAILJS INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  }
+  document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+});
+
+async function sendEmail(templateParams) {
+  if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    console.log('[EmailJS] Chưa cấu hình — bỏ qua gửi email:', templateParams);
+    return;
+  }
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+    console.log('[EmailJS] Gửi email thành công');
+  } catch(e) {
+    console.warn('[EmailJS] Lỗi gửi email:', e);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════
 function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
   const pass  = document.getElementById('login-password').value;
-  let valid = true;
-
   document.getElementById('email-err').classList.remove('show');
   document.getElementById('pass-err').classList.remove('show');
-  document.getElementById('login-email').classList.remove('error');
-  document.getElementById('login-password').classList.remove('error');
-
-  if (!email.endsWith('@lof.vn')) {
-    document.getElementById('email-err').classList.add('show');
-    document.getElementById('login-email').classList.add('error');
-    valid = false;
-  }
-  if (!pass) {
-    document.getElementById('pass-err').classList.add('show');
-    document.getElementById('login-password').classList.add('error');
-    valid = false;
-  }
-
+  let valid = true;
+  if (!email.endsWith('@lof.vn')) { document.getElementById('email-err').classList.add('show'); valid=false; }
+  if (!pass)                       { document.getElementById('pass-err').classList.add('show');  valid=false; }
   if (!valid) return;
-
-  // Simulate login success (replace with real auth if needed)
+  if (USERS[email]) {
+    if (USERS[email].pass !== pass) { document.getElementById('pass-err').classList.add('show'); return; }
+    isAdmin = USERS[email].isAdmin;
+  } else { isAdmin = false; }
   currentUser = email;
   document.getElementById('user-display').textContent = email;
+  document.getElementById('admin-badge').style.display = isAdmin ? 'inline-block' : 'none';
+  document.getElementById('tab-approve').style.display = isAdmin ? 'flex' : 'none';
   document.getElementById('login-page').style.display = 'none';
-  document.getElementById('app-page').style.display = 'block';
-
-  showToast('success', 'Đăng nhập thành công', 'Chào mừng ' + email);
+  document.getElementById('app-page').style.display   = 'block';
+  updatePendingCount();
+  switchTab(isAdmin ? 'approve' : 'new');
+  showToast('success','Đăng nhập thành công','Chào mừng ' + email);
 }
 
 function doLogout() {
-  currentUser = null;
-  document.getElementById('login-page').style.display = 'flex';
-  document.getElementById('app-page').style.display = 'none';
-  document.getElementById('login-email').value = '';
-  document.getElementById('login-password').value = '';
+  currentUser=null; isAdmin=false; taxExtraCount=0;
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('app-page').style.display='none';
+  document.getElementById('login-email').value='';
+  document.getElementById('login-password').value='';
+  document.getElementById('tax-extra-container').innerHTML='';
+  document.getElementById('btn-add-tax-row').style.display='flex';
 }
 
-// Enter key on login
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('login-password').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+function switchTab(name) {
+  ['new','mine','approve'].forEach(t => {
+    document.getElementById('tab-'+t).classList.remove('active');
+    document.getElementById('content-'+t).classList.remove('active');
   });
-  document.getElementById('login-email').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('content-'+name).classList.add('active');
+  if (name==='mine')    renderMyRequests();
+  if (name==='approve') { currentFilter='all'; applyFilter(); }
+}
+
+// ═══════════════════════════════════════════════
+// FILTER (admin)
+// ═══════════════════════════════════════════════
+function setFilter(f) {
+  currentFilter = f;
+  ['all','pending','approved','rejected'].forEach(k => {
+    document.getElementById('fbtn-'+k).classList.toggle('active', k===f);
   });
-});
-
-// ==========================================
-// COMPANY CODE TOGGLE
-// ==========================================
-function toggleCompany(cb) {
-  const label = document.getElementById('cb-' + cb.value + '-label');
-  if (cb.checked) {
-    label.classList.add('checked');
-  } else {
-    label.classList.remove('checked');
-  }
+  applyFilter();
 }
 
-// ==========================================
-// FORM HELPERS
-// ==========================================
-function v(id) { return document.getElementById(id).value.trim(); }
-
-function setError(id, msg) {
-  const el = document.getElementById(id + '-err');
-  if (el) {
-    el.textContent = msg || 'Trường này bắt buộc.';
-    el.classList.add('show');
+function applyFilter() {
+  const search = (document.getElementById('filter-search').value||'').toLowerCase();
+  let list = REQUESTS;
+  if (currentFilter !== 'all') list = list.filter(r => r.status === currentFilter);
+  if (search) list = list.filter(r =>
+    (r.data.NAME1||'').toLowerCase().includes(search) ||
+    (r.id||'').toLowerCase().includes(search) ||
+    (r.submitter||'').toLowerCase().includes(search) ||
+    (r.data.SEARCHTERM1||'').toLowerCase().includes(search) ||
+    (r.data.TAXNUM||'').toLowerCase().includes(search)
+  );
+  // Sort: pending first
+  list = [...list].sort((a,b) => {
+    if(a.status==='pending'&&b.status!=='pending') return -1;
+    if(a.status!=='pending'&&b.status==='pending') return 1;
+    return new Date(b.submittedAt)-new Date(a.submittedAt);
+  });
+  const container = document.getElementById('approval-list');
+  document.getElementById('filter-count').textContent = list.length + ' kết quả';
+  if (!list.length) {
+    container.innerHTML = '<div class="queue-empty"><div class="empty-icon">'+(search?'🔍':'✅')+'</div><p>'+(search?'Không tìm thấy kết quả phù hợp.':'Không có yêu cầu nào.')+'</p></div>';
+    return;
   }
-  const input = document.getElementById(id);
-  if (input) input.classList.add('error');
+  container.innerHTML = list.map(r => buildRequestCard(r)).join('');
 }
 
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function v(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
 function clearErrors() {
-  document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
-  document.querySelectorAll('input.error').forEach(e => e.classList.remove('error'));
+  document.querySelectorAll('.error-msg').forEach(e=>e.classList.remove('show'));
+  document.querySelectorAll('input.error,select.error').forEach(e=>e.classList.remove('error'));
+}
+function setError(id,msg) {
+  const err=document.getElementById(id+'-err');
+  if(err){err.textContent=msg||'Trường này bắt buộc.';err.classList.add('show');}
+  const el=document.getElementById(id); if(el) el.classList.add('error');
+}
+function fmtDate(iso) {
+  const d=new Date(iso);
+  return d.toLocaleDateString('vi-VN')+' '+d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+}
+function genId() { return 'REQ-'+String(REQUESTS.length+1).padStart(3,'0')+'-'+Date.now().toString().slice(-4); }
+function updatePendingCount() {
+  const n=REQUESTS.filter(r=>r.status==='pending').length;
+  const el=document.getElementById('pending-count');
+  el.textContent=n; el.style.display=n>0?'inline-flex':'none';
+}
+function toggleCompany(cb) {
+  document.getElementById('cb-'+cb.value+'-label').classList.toggle('checked',cb.checked);
 }
 
-// ==========================================
+// ═══════════════════════════════════════════════
+// TAX EXTRA
+// ═══════════════════════════════════════════════
+function addTaxRow() {
+  if (taxExtraCount>=1) return;
+  taxExtraCount++;
+  document.getElementById('tax-extra-container').innerHTML = `
+  <div class="tax-extra-row" id="tax-extra-1">
+    <div class="tax-row-header">
+      <div class="tax-row-title">🔖 Mã số thuế bổ sung</div>
+      <button class="btn-remove-tax" onclick="removeTaxRow()">✕ Xoá</button>
+    </div>
+    <div class="form-row cols-2" style="margin-bottom:0;">
+      <div class="form-group" style="margin-bottom:0;"><label>Loại thuế (Tax Type)</label><input type="text" id="TAXTYPE_1" placeholder="VN0" maxlength="4"></div>
+      <div class="form-group" style="margin-bottom:0;"><label>Mã số thuế (Tax Number)</label><input type="text" id="TAXNUM_1" placeholder="0601242014" maxlength="20"></div>
+    </div>
+  </div>`;
+  document.getElementById('btn-add-tax-row').style.display='none';
+}
+function removeTaxRow() {
+  const el=document.getElementById('tax-extra-1'); if(el) el.remove();
+  taxExtraCount=0;
+  document.getElementById('btn-add-tax-row').style.display='flex';
+}
+
+// ═══════════════════════════════════════════════
 // BUILD PAYLOAD
-// ==========================================
+// ═══════════════════════════════════════════════
 function buildPayload() {
-  const payload = {
-    GROUPING:     v('GROUPING'),
-    NAME1:        v('NAME1'),
-    NAME2:        v('NAME2'),
-    NAME3:        v('NAME3'),
-    NAME4:        v('NAME4'),
-    SEARCHTERM1:  v('SEARCHTERM1'),
-    COUNTRY:      v('COUNTRY'),
-    REGION:       v('REGION'),
-    CITY:         v('CITY'),
-    STREET:       v('STREET'),
-    STREET2:      v('STREET2'),
-    STREET3:      v('STREET3'),
-    STREET4:      v('STREET4'),
-    STREET5:      v('STREET5'),
-    PHONE_LINES:  [],
-    EMAIL_LINES:  [],
-    INDUSTRY_LINES: [],
-    TAX_LINES:    [],
-    BANK_LINES:   [],
-    PURCHASING_LINES: []
+  const p = {
+    GROUPING:'Z01', NAME1:v('NAME1'), NAME2:v('NAME2'), NAME3:v('NAME3'), NAME4:v('NAME4'),
+    SEARCHTERM1:v('SEARCHTERM1'), COUNTRY:v('COUNTRY'), REGION:v('REGION'), CITY:v('CITY'),
+    STREET:v('STREET'), STREET2:v('STREET2'), STREET3:v('STREET3'), STREET4:v('STREET4'), STREET5:v('STREET5'),
+    PHONE_LINES:[], EMAIL_LINES:[], INDUSTRY_LINES:[], TAX_LINES:[], BANK_LINES:[], PURCHASING_LINES:[]
   };
-
-  // Phone
-  if (v('PHONE1')) payload.PHONE_LINES.push({ PHONE: v('PHONE1') });
-  if (v('PHONE2')) payload.PHONE_LINES.push({ PHONE: v('PHONE2') });
-
-  // Email
-  if (v('EMAIL1')) payload.EMAIL_LINES.push({ EMAIL: v('EMAIL1') });
-  if (v('EMAIL2')) payload.EMAIL_LINES.push({ EMAIL: v('EMAIL2') });
-
-  // Industry
-  if (v('IND_SECTOR')) {
-    payload.INDUSTRY_LINES.push({ IND_SECTOR: v('IND_SECTOR'), IND_DEFAULT: 'X' });
-  }
-
-  // Tax
-  if (v('TAXTYPE') || v('TAXNUM')) {
-    payload.TAX_LINES.push({ TAXTYPE: v('TAXTYPE'), TAXNUM: v('TAXNUM') });
-  }
-
-  // Bank
-  if (v('BANK_DATA_KEY') || v('BANK_KEY') || v('BANK_ACCT')) {
-    payload.BANK_LINES.push({
-      DATA_KEY:      v('BANK_DATA_KEY'),
-      BANK_CTRY:     v('BANK_CTRY'),
-      BANK_KEY:      v('BANK_KEY'),
-      BANK_ACCT:     v('BANK_ACCT'),
-      ACCOUNTHOLDER: v('ACCOUNTHOLDER')
-    });
-  }
-
-  // Purchasing — build one record per selected company code
-  const sharedFields = {
-    CURRENCY:     v('PUR_CURRENCY'),
-    PAYTERM:      v('PUR_PAYTERM'),
-    SCHEMA_GRP:   v('PUR_SCHEMA_GRP'),
-    PAYMETHOD:    v('PUR_PAYMETHOD'),
-    PLANNING_GRP: v('PUR_PLANNING_GRP'),
-    AKONT:        v('PUR_AKONT')
-  };
-
-  const cc1 = document.getElementById('CB_CC_1000').checked;
-  const cc2 = document.getElementById('CB_CC_2000').checked;
-
-  if (cc1) {
-    payload.PURCHASING_LINES.push(Object.assign({}, sharedFields, { PUR_ORG: '1000', COMPCODE: '1000' }));
-  }
-  if (cc2) {
-    payload.PURCHASING_LINES.push(Object.assign({}, sharedFields, { PUR_ORG: '2000', COMPCODE: '2000' }));
-  }
-
-  return payload;
+  if(v('PHONE1')) p.PHONE_LINES.push({PHONE:v('PHONE1')});
+  if(v('PHONE2')) p.PHONE_LINES.push({PHONE:v('PHONE2')});
+  if(v('EMAIL1')) p.EMAIL_LINES.push({EMAIL:v('EMAIL1')});
+  if(v('EMAIL2')) p.EMAIL_LINES.push({EMAIL:v('EMAIL2')});
+  if(v('IND_SECTOR')) p.INDUSTRY_LINES.push({IND_SECTOR:v('IND_SECTOR'),IND_DEFAULT:'X'});
+  if(v('TAXTYPE')||v('TAXNUM')) p.TAX_LINES.push({TAXTYPE:v('TAXTYPE'),TAXNUM:v('TAXNUM')});
+  if(taxExtraCount>=1){ const tt=v('TAXTYPE_1'),tn=v('TAXNUM_1'); if(tt||tn) p.TAX_LINES.push({TAXTYPE:tt,TAXNUM:tn}); }
+  if(v('BANK_DATA_KEY')||v('BANK_KEY')||v('BANK_ACCT'))
+    p.BANK_LINES.push({DATA_KEY:v('BANK_DATA_KEY'),BANK_CTRY:v('BANK_CTRY'),BANK_KEY:v('BANK_KEY'),BANK_ACCT:v('BANK_ACCT'),ACCOUNTHOLDER:v('ACCOUNTHOLDER')});
+  const sh={CURRENCY:v('PUR_CURRENCY'),PAYTERM:v('PUR_PAYTERM'),SCHEMA_GRP:v('PUR_SCHEMA_GRP'),PAYMETHOD:v('PUR_PAYMETHOD'),PLANNING_GRP:v('PUR_PLANNING_GRP'),AKONT:v('PUR_AKONT')};
+  if(document.getElementById('CB_CC_1000').checked) p.PURCHASING_LINES.push(Object.assign({},sh,{PUR_ORG:'1000',COMPCODE:'1000'}));
+  if(document.getElementById('CB_CC_2000').checked) p.PURCHASING_LINES.push(Object.assign({},sh,{PUR_ORG:'2000',COMPCODE:'2000'}));
+  return p;
 }
 
-// ==========================================
+// ═══════════════════════════════════════════════
 // VALIDATE
-// ==========================================
-function validateForm(payload) {
-  let valid = true;
-  clearErrors();
-
-  if (!payload.GROUPING) { setError('GROUPING'); valid = false; }
-  if (!payload.NAME1)    { setError('NAME1');    valid = false; }
-  if (!payload.COUNTRY)  { setError('COUNTRY');  valid = false; }
-
-  const hasCC = document.getElementById('CB_CC_1000').checked || document.getElementById('CB_CC_2000').checked;
-  if (!hasCC) {
-    showToast('error', 'Chưa chọn Company Code', 'Vui lòng chọn ít nhất 1 Company Code ở Section 7.');
-    valid = false;
+// ═══════════════════════════════════════════════
+function validateForm(p) {
+  let ok=true; clearErrors();
+  if(!p.NAME1)   { setError('NAME1');   ok=false; }
+  if(!p.COUNTRY) { setError('COUNTRY'); ok=false; }
+  if(!document.getElementById('CB_CC_1000').checked && !document.getElementById('CB_CC_2000').checked) {
+    showToast('error','Chưa chọn Company Code','Vui lòng chọn ít nhất 1 Company Code ở Section 7.'); ok=false;
   }
-
-  return valid;
+  return ok;
 }
 
-// ==========================================
-// SUBMIT
-// ==========================================
-async function submitForm() {
+// ═══════════════════════════════════════════════
+// SUBMIT FOR APPROVAL
+// ═══════════════════════════════════════════════
+async function submitForApproval() {
   const payload = buildPayload();
   if (!validateForm(payload)) return;
-
-  document.getElementById('loading-overlay').classList.add('show');
   document.getElementById('btn-submit').disabled = true;
+  const req = { id:genId(), submitter:currentUser, submittedAt:new Date().toISOString(), status:'pending', rejectReason:'', data:payload };
+  REQUESTS.push(req);
+  updatePendingCount();
 
+  // Email to admin
+  await sendEmail({
+    to_email:   ADMIN_EMAIL,
+    to_name:    'Admin LOF',
+    subject:    '[LOF Vendor Portal] Yêu cầu mới cần duyệt: ' + req.id,
+    req_id:     req.id,
+    vendor_name: payload.NAME1,
+    submitter:  currentUser,
+    submitted_at: fmtDate(req.submittedAt),
+    message:    'Có yêu cầu tạo vendor mới cần duyệt. Vui lòng đăng nhập Vendor Portal để xem và phê duyệt.',
+    action:     'Duyệt yêu cầu'
+  });
+
+  document.getElementById('btn-submit').disabled = false;
+  showResult('info','Đã gửi yêu cầu thành công','Mã yêu cầu: <strong>'+req.id+'</strong><br>Vendor: <strong>'+payload.NAME1+'</strong><br><br>Approver sẽ xem xét và thông báo kết quả qua email của bạn.');
+  resetForm();
+}
+
+function resetForm() {
+  ['NAME1','NAME2','NAME3','NAME4','SEARCHTERM1','REGION','CITY','STREET','STREET2','STREET3','STREET4','STREET5',
+   'PHONE1','PHONE2','EMAIL1','EMAIL2','TAXTYPE','TAXNUM','BANK_DATA_KEY','BANK_KEY','BANK_ACCT','ACCOUNTHOLDER','PUR_SCHEMA_GRP','PUR_PAYMETHOD']
+  .forEach(id => { const el=document.getElementById(id); if(el) el.value=(id==='PUR_CURRENCY'?'VND':id==='COUNTRY'?'VN':id==='BANK_CTRY'?'VN':''); });
+  ['IND_SECTOR','PUR_PAYTERM','PUR_PLANNING_GRP','PUR_AKONT'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
+  document.getElementById('CB_CC_1000').checked=false; document.getElementById('cb-1000-label').classList.remove('checked');
+  document.getElementById('CB_CC_2000').checked=false; document.getElementById('cb-2000-label').classList.remove('checked');
+  document.getElementById('PUR_CURRENCY').value='VND';
+  document.getElementById('COUNTRY').value='VN';
+  document.getElementById('BANK_CTRY').value='VN';
+  document.getElementById('tax-extra-container').innerHTML='';
+  document.getElementById('btn-add-tax-row').style.display='flex';
+  taxExtraCount=0;
+}
+
+// ═══════════════════════════════════════════════
+// MY REQUESTS TAB
+// ═══════════════════════════════════════════════
+function renderMyRequests() {
+  const mine = REQUESTS.filter(r=>r.submitter===currentUser).reverse();
+  const c = document.getElementById('my-requests-list');
+  if (!mine.length) { c.innerHTML='<div class="queue-empty"><div class="empty-icon">📭</div><p>Bạn chưa có yêu cầu nào.</p></div>'; return; }
+  c.innerHTML = mine.map(r => {
+    const sc = r.status==='pending'?'status-pending':r.status==='approved'?'status-approved':'status-rejected';
+    const sl = r.status==='pending'?'⏳ Chờ duyệt':r.status==='approved'?'✅ Đã duyệt':'❌ Từ chối';
+    const rrHtml = r.status==='rejected' && r.rejectReason
+      ? `<div class="my-req-reject-reason">💬 Lý do từ chối: ${r.rejectReason}</div>` : '';
+    const bpHtml = r.status==='approved' && r.bpNumber
+      ? `<span style="background:var(--success-light);color:#14532d;font-size:.75rem;padding:2px 8px;border-radius:8px;font-weight:600;margin-left:8px;">BP# ${r.bpNumber}</span>` : '';
+    return `<div class="my-req-card">
+      <div class="my-req-info">
+        <div class="my-req-name">${r.data.NAME1||'(chưa có tên)'} ${bpHtml}</div>
+        <div class="my-req-sub">${r.id} · Gửi lúc ${fmtDate(r.submittedAt)}</div>
+        ${rrHtml}
+      </div>
+      <span class="status-badge ${sc}">${sl}</span>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// BUILD REQUEST CARD (admin view)
+// ═══════════════════════════════════════════════
+
+function buildRequestCard(r) {
+  const d = r.data;
+  const sc = r.status==='pending'?'status-pending':r.status==='approved'?'status-approved':'status-rejected';
+  const sl = r.status==='pending'?'\u23f3 Ch\u1edd duy\u1ec7t':r.status==='approved'?'\u2705 \u0110\u00e3 duy\u1ec7t':'\u274c T\u1eeb ch\u1ed1i';
+  const phones = (d.PHONE_LINES||[]).map(p=>p.PHONE).filter(Boolean).join(', ')||'\u2014';
+  const emails = (d.EMAIL_LINES||[]).map(e=>e.EMAIL).filter(Boolean).join(', ')||'\u2014';
+  const taxes  = (d.TAX_LINES||[]).map(t=>`<span class="view-tag">${t.TAXTYPE}: ${t.TAXNUM}</span>`).join('')||'\u2014';
+  const bank0  = (d.BANK_LINES||[])[0];
+  const pur0   = (d.PURCHASING_LINES||[])[0];
+  const ccs    = (d.PURCHASING_LINES||[]).map(p=>p.COMPCODE).join(', ')||'\u2014';
+  const ind    = (d.INDUSTRY_LINES||[])[0]?.IND_SECTOR||'\u2014';
+  const bpBadge = r.bpNumber ? `<span style="background:var(--success-light);color:#14532d;font-size:.75rem;padding:2px 10px;border-radius:8px;font-weight:600;margin-left:8px;">BP# ${r.bpNumber}</span>` : '';
+
+  const rejectBox = r.status==='rejected' && r.rejectReason
+    ? `<div class="reject-reason-box"><div class="rrb-label">\ud83d\udcac L\xfd do t\u1eeb ch\u1ed1i</div><div class="rrb-text">${r.rejectReason}</div></div>` : '';
+
+  const actionBtns = r.status==='pending'
+    ? `<button class="btn-approve" onclick="approveRequest('${r.id}')">\u2705 Duy\u1ec7t &amp; G\u1eedi SAP</button>
+       <button class="btn-edit-req" onclick="toggleEditPanel('${r.id}')">\u270f\ufe0f Ch\u1ec9nh s\u1eeda</button>
+       <button class="btn-reject" onclick="openRejectModal('${r.id}')">\u274c T\u1eeb ch\u1ed1i</button>
+       <button class="btn-collapse" onclick="toggleCard('${r.id}')">Thu g\u1ecdn \u25b2</button>`
+    : `<button class="btn-collapse" onclick="toggleCard('${r.id}')">Thu g\u1ecdn \u25b2</button>`;
+
+  return `<div class="request-card" id="card-${r.id}">
+    <div class="request-card-header" onclick="toggleCard('${r.id}')">
+      <div class="request-meta">
+        <span class="request-id">${r.id}</span>
+        <span class="request-name">${d.NAME1||'\u2014'}${bpBadge}</span>
+        <span class="request-submitter">\ud83d\udc64 ${r.submitter}</span>
+        <span class="request-time">\ud83d\udd50 ${fmtDate(r.submittedAt)}</span>
+      </div>
+      <span class="status-badge ${sc}">${sl}</span>
+    </div>
+    <div class="request-body" id="body-${r.id}">
+      <div class="view-section-title">Th\xf4ng tin chung</div>
+      <div class="view-grid">
+        <div class="view-field"><div class="view-label">Name 1</div><div class="view-value">${d.NAME1||'\u2014'}</div></div>
+        <div class="view-field"><div class="view-label">Name 2 / 3 / 4</div><div class="view-value ${!d.NAME2?'empty':''}">${[d.NAME2,d.NAME3,d.NAME4].filter(Boolean).join(' / ')||'(tr\u1ed1ng)'}</div></div>
+        <div class="view-field"><div class="view-label">Search Term</div><div class="view-value ${!d.SEARCHTERM1?'empty':''}">${d.SEARCHTERM1||'(tr\u1ed1ng)'}</div></div>
+        <div class="view-field"><div class="view-label">Grouping</div><div class="view-value">${d.GROUPING}</div></div>
+      </div>
+      <div class="view-section-title">\u0110\u1ecba ch\u1ec9</div>
+      <div class="view-grid">
+        <div class="view-field"><div class="view-label">Qu\u1ed1c gia / V\xf9ng / TP</div><div class="view-value">${d.COUNTRY} / ${d.REGION||'\u2014'} / ${d.CITY||'\u2014'}</div></div>
+        <div class="view-field"><div class="view-label">\u0110\u1ecba ch\u1ec9</div><div class="view-value ${!d.STREET?'empty':''}">${[d.STREET,d.STREET2,d.STREET3,d.STREET4,d.STREET5].filter(Boolean).join(', ')||'(tr\u1ed1ng)'}</div></div>
+      </div>
+      <div class="view-section-title">Li\xean l\u1ea1c</div>
+      <div class="view-grid">
+        <div class="view-field"><div class="view-label">\u0110i\u1ec7n tho\u1ea1i</div><div class="view-value">${phones}</div></div>
+        <div class="view-field"><div class="view-label">Email</div><div class="view-value">${emails}</div></div>
+      </div>
+      <div class="view-section-title">Thu\u1ebf &amp; Ng\xe0nh ngh\u1ec1</div>
+      <div class="view-grid">
+        <div class="view-field"><div class="view-label">Industry Sector</div><div class="view-value">${ind}</div></div>
+        <div class="view-field"><div class="view-label">Tax Lines</div><div class="view-tags">${taxes}</div></div>
+      </div>
+      <div class="view-section-title">Ng\xe2n h\xe0ng</div>
+      <div class="view-grid">
+        <div class="view-field"><div class="view-label">Bank Key / S\u1ed1 TK</div><div class="view-value ${!bank0?'empty':''}">${bank0?bank0.BANK_KEY+' / '+bank0.BANK_ACCT:'(tr\u1ed1ng)'}</div></div>
+        <div class="view-field"><div class="view-label">Account Holder</div><div class="view-value ${!bank0?.ACCOUNTHOLDER?'empty':''}">${bank0?.ACCOUNTHOLDER||'(tr\u1ed1ng)'}</div></div>
+      </div>
+      <div class="view-section-title">Purchasing</div>
+      <div class="view-grid">
+        <div class="view-field"><div class="view-label">Company Code(s)</div><div class="view-tags">${ccs.split(',').map(c=>'<span class="view-tag">'+c.trim()+'</span>').join('')}</div></div>
+        <div class="view-field"><div class="view-label">Payment Terms / Method</div><div class="view-value">${pur0?.PAYTERM||'\u2014'} / ${pur0?.PAYMETHOD||'\u2014'}</div></div>
+        <div class="view-field"><div class="view-label">Planning Group</div><div class="view-value">${pur0?.PLANNING_GRP||'\u2014'}</div></div>
+        <div class="view-field"><div class="view-label">AKONT</div><div class="view-value">${pur0?.AKONT||'\u2014'}</div></div>
+      </div>
+      ${rejectBox}
+    </div>
+    <div class="edit-panel" id="edit-${r.id}">
+      <div class="edit-panel-title">\u270f\ufe0f Ch\u1ec9nh s\u1eeda y\xeau c\u1ea7u ${r.id}</div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Name 1 <span class="required">*</span></label><input type="text" id="e_NAME1_${r.id}" value="${d.NAME1||''}" maxlength="40"></div>
+        <div class="form-group"><label>Name 2</label><input type="text" id="e_NAME2_${r.id}" value="${d.NAME2||''}" maxlength="40"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Name 3</label><input type="text" id="e_NAME3_${r.id}" value="${d.NAME3||''}" maxlength="40"></div>
+        <div class="form-group"><label>Name 4</label><input type="text" id="e_NAME4_${r.id}" value="${d.NAME4||''}" maxlength="40"></div>
+      </div>
+      <div class="form-row cols-3">
+        <div class="form-group"><label>Country</label><input type="text" id="e_COUNTRY_${r.id}" value="${d.COUNTRY}" maxlength="3"></div>
+        <div class="form-group"><label>Region</label><input type="text" id="e_REGION_${r.id}" value="${d.REGION||''}" maxlength="3"></div>
+        <div class="form-group"><label>City</label><input type="text" id="e_CITY_${r.id}" value="${d.CITY||''}" maxlength="25"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Street</label><input type="text" id="e_STREET_${r.id}" value="${d.STREET||''}" maxlength="60"></div>
+        <div class="form-group"><label>Street Suppl.1</label><input type="text" id="e_STREET2_${r.id}" value="${d.STREET2||''}" maxlength="40"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Phone 1</label><input type="text" id="e_PHONE1_${r.id}" value="${(d.PHONE_LINES||[])[0]?.PHONE||''}" maxlength="30"></div>
+        <div class="form-group"><label>Phone 2</label><input type="text" id="e_PHONE2_${r.id}" value="${(d.PHONE_LINES||[])[1]?.PHONE||''}" maxlength="30"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Email 1</label><input type="text" id="e_EMAIL1_${r.id}" value="${(d.EMAIL_LINES||[])[0]?.EMAIL||''}" maxlength="100"></div>
+        <div class="form-group"><label>Email 2</label><input type="text" id="e_EMAIL2_${r.id}" value="${(d.EMAIL_LINES||[])[1]?.EMAIL||''}" maxlength="100"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>Tax Type</label><input type="text" id="e_TAXTYPE_${r.id}" value="${(d.TAX_LINES||[])[0]?.TAXTYPE||''}" maxlength="4"></div>
+        <div class="form-group"><label>Tax Number</label><input type="text" id="e_TAXNUM_${r.id}" value="${(d.TAX_LINES||[])[0]?.TAXNUM||''}" maxlength="20"></div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;">
+        <button class="btn-save-edit" onclick="saveEdit('${r.id}')">\ud83d\udcbe L\u01b0u thay \u0111\u1ed5i</button>
+        <button class="btn-cancel-edit" onclick="toggleEditPanel('${r.id}')">Hu\u1ef7</button>
+      </div>
+    </div>
+    <div class="request-actions" id="actions-${r.id}">${actionBtns}</div>
+  </div>`;
+}
+
+function toggleCard(id) {
+  const body=document.getElementById('body-'+id);
+  const edit=document.getElementById('edit-'+id);
+  const actions=document.getElementById('actions-'+id);
+  const hidden=body.style.display==='none';
+  body.style.display=hidden?'block':'none';
+  if(edit){edit.style.display='none';edit.classList.remove('open');}
+  actions.style.display=hidden?'flex':'none';
+}
+
+function toggleEditPanel(id) {
+  document.getElementById('edit-'+id).classList.toggle('open');
+}
+
+function saveEdit(id) {
+  const req=REQUESTS.find(r=>r.id===id); if(!req) return;
+  const ev=f=>{const el=document.getElementById('e_'+f+'_'+id);return el?el.value.trim():'';};
+  req.data.NAME1=ev('NAME1');req.data.NAME2=ev('NAME2');req.data.NAME3=ev('NAME3');req.data.NAME4=ev('NAME4');
+  req.data.COUNTRY=ev('COUNTRY');req.data.REGION=ev('REGION');req.data.CITY=ev('CITY');
+  req.data.STREET=ev('STREET');req.data.STREET2=ev('STREET2');
+  req.data.PHONE_LINES=[ev('PHONE1'),ev('PHONE2')].filter(Boolean).map(p=>({PHONE:p}));
+  req.data.EMAIL_LINES=[ev('EMAIL1'),ev('EMAIL2')].filter(Boolean).map(e=>({EMAIL:e}));
+  const tt=ev('TAXTYPE'),tn=ev('TAXNUM');if(tt||tn)req.data.TAX_LINES=[{TAXTYPE:tt,TAXNUM:tn}];
+  showToast('success','\u0110\u00e3 l\u01b0u','D\u1eef li\u1ec7u y\xeau c\u1ea7u '+id+' \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt.');
+  applyFilter();
+}
+
+// APPROVE
+async function approveRequest(id) {
+  const req=REQUESTS.find(r=>r.id===id);if(!req)return;
+  document.getElementById('loading-text').textContent='Đang gửi dữ liệu lên SAP...';
+  document.getElementById('loading-overlay').classList.add('show');
   try {
-    const resp = await fetch(SAP_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + btoa('sapuser:sappassword') // TODO: thay credentials thật
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await resp.json();
-
+    const resp=await fetch(SAP_API_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Basic '+SAP_CRED},body:JSON.stringify(req.data)});
+    const data=await resp.json();
     document.getElementById('loading-overlay').classList.remove('show');
-    document.getElementById('btn-submit').disabled = false;
-
-    if (data.status === true || data.status === 'X' || resp.ok && data.bp_number) {
-      showResult(true, data.bp_number, data.message || 'Vendor đã được tạo thành công.', data);
+    if(data.status===true||data.status==='X'||data.bp_number){
+      req.status='approved';req.bpNumber=data.bp_number;
+      await sendEmail({to_email:req.submitter,to_name:req.submitter,subject:'[LOF Vendor Portal] \u2705 Y\xeau c\u1ea7u '+req.id+' \u0111\u00e3 \u0111\u01b0\u1ee3c duy\u1ec7t',req_id:req.id,vendor_name:req.data.NAME1,submitter:req.submitter,submitted_at:fmtDate(req.submittedAt),message:'Y\xeau c\u1ea7u t\u1ea1o vendor c\u1ee7a b\u1ea1n \u0111\u00e3 \u0111\u01b0\u1ee3c ph\xea duy\u1ec7t.\nBP Number: '+(data.bp_number||'\u2014'),action:'\u0110\u00e3 duy\u1ec7t'});
+      updatePendingCount();applyFilter();
+      showResult('success','\u0110\u00e3 duy\u1ec7t &amp; t\u1ea1o th\xe0nh c\xf4ng','BP Number: <strong>'+(data.bp_number||'\u2014')+'</strong><br>Email th\xf4ng b\xe1o \u0111\u00e3 g\u1eedi \u0111\u1ebfn ng\u01b0\u1eddi t\u1ea1o y\xeau c\u1ea7u.');
     } else {
-      showResult(false, null, data.message || 'Có lỗi xảy ra. Vui lòng kiểm tra lại.', data);
+      showResult('error','SAP tr\u1ea3 v\u1ec1 l\u1ed7i',(data.message||'L\u1ed7i kh\xf4ng x\xe1c \u0111\u1ecbnh')+'<br>ID: '+(data.message_id||'\u2014')+'  No: '+(data.message_no||'\u2014'));
     }
-
-  } catch (err) {
+  } catch(err) {
     document.getElementById('loading-overlay').classList.remove('show');
-    document.getElementById('btn-submit').disabled = false;
-    showResult(false, null,
-      'Không kết nối được SAP API.\n' + err.message +
-      '\n\nKiểm tra: SAP_API_URL trong file HTML, network, CORS.', null);
+    req.status='approved';req.bpNumber='MOCK-'+Math.floor(Math.random()*90000+10000);
+    await sendEmail({to_email:req.submitter,to_name:req.submitter,subject:'[LOF Vendor Portal] \u2705 Y\xeau c\u1ea7u '+req.id+' \u0111\u00e3 \u0111\u01b0\u1ee3c duy\u1ec7t (Mock)',req_id:req.id,vendor_name:req.data.NAME1,submitter:req.submitter,submitted_at:fmtDate(req.submittedAt),message:'Y\xeau c\u1ea7u \u0111\u00e3 \u0111\u01b0\u1ee3c ph\xea duy\u1ec7t (ch\u1ebf \u0111\u1ed9 test).\nMock BP#: '+req.bpNumber,action:'\u0110\u00e3 duy\u1ec7t (Mock)'});
+    updatePendingCount();applyFilter();
+    showResult('info','[MOCK] Duy\u1ec7t th\xe0nh c\xf4ng','SAP ch\u01b0a k\u1ebft n\u1ed1i \u2014 \u0111\xe2y l\xe0 k\u1ebft qu\u1ea3 test.<br>Mock BP#: <strong>'+req.bpNumber+'</strong><br>Email th\xf4ng b\xe1o \u0111\u00e3 g\u1eedi (n\u1ebfu \u0111\u00e3 c\u1ea5u h\xecnh EmailJS).');
   }
 }
 
-// ==========================================
-// RESULT MODAL
-// ==========================================
-function showResult(success, bpNumber, message, raw) {
-  const modal = document.getElementById('result-modal-wrapper');
-  const icon  = document.getElementById('res-icon');
-  const title = document.getElementById('res-title');
-  const bp    = document.getElementById('res-bp');
-  const msg   = document.getElementById('res-msg');
-  const detail= document.getElementById('res-detail');
-
-  if (success) {
-    icon.className = 'result-icon-circle success';
-    icon.textContent = '✓';
-    title.textContent = 'Tạo Vendor thành công!';
-    title.style.color = 'var(--success)';
-    if (bpNumber) {
-      bp.textContent = 'BP#' + bpNumber;
-      bp.style.display = 'block';
-    }
-    msg.textContent = message;
-  } else {
-    icon.className = 'result-icon-circle error';
-    icon.textContent = '✕';
-    title.textContent = 'Tạo Vendor thất bại';
-    title.style.color = 'var(--danger)';
-    bp.style.display = 'none';
-    msg.textContent = message;
-  }
-
-  if (raw) {
-    const id  = raw.message_id || '';
-    const no  = raw.message_no || '';
-    detail.innerHTML =
-      '<strong>Message ID:</strong> ' + (id||'—') + '<br>' +
-      '<strong>Message No:</strong> '  + (no||'—');
-    detail.style.display = 'block';
-  } else {
-    detail.style.display = 'none';
-  }
-
-  modal.classList.add('show');
+// REJECT MODAL
+function openRejectModal(id) {
+  rejectTargetId=id;
+  document.getElementById('reject-reason-input').value='';
+  document.getElementById('reject-reason-input').style.borderColor='';
+  document.getElementById('reject-reason-input').placeholder='VD: Th\xf4ng tin MST ch\u01b0a ch\xednh x\xe1c. Vui l\xf2ng ki\u1ec3m tra v\xe0 g\u1eedi l\u1ea1i...';
+  document.getElementById('reject-modal-wrapper').classList.add('show');
+  setTimeout(()=>document.getElementById('reject-reason-input').focus(),100);
 }
 
-function closeModal() {
-  document.getElementById('result-modal-wrapper').classList.remove('show');
+function closeRejectModal() {
+  document.getElementById('reject-modal-wrapper').classList.remove('show');
+  rejectTargetId=null;
 }
 
-// ==========================================
-// TOAST
-// ==========================================
-let toastTimer = null;
-function showToast(type, title, msg) {
-  const el = document.getElementById('toast');
-  const icon = document.getElementById('toast-icon');
-  document.getElementById('toast-title').textContent = title;
-  document.getElementById('toast-msg').textContent   = msg;
+async function confirmReject() {
+  const reason=document.getElementById('reject-reason-input').value.trim();
+  if(!reason){document.getElementById('reject-reason-input').style.borderColor='var(--danger)';return;}
+  document.getElementById('reject-reason-input').style.borderColor='';
+  const req=REQUESTS.find(r=>r.id===rejectTargetId);if(!req)return;
+  req.status='rejected';req.rejectReason=reason;
+  closeRejectModal();
+  await sendEmail({to_email:req.submitter,to_name:req.submitter,subject:'[LOF Vendor Portal] \u274c Y\xeau c\u1ea7u '+req.id+' b\u1ecb t\u1eeb ch\u1ed1i',req_id:req.id,vendor_name:req.data.NAME1,submitter:req.submitter,submitted_at:fmtDate(req.submittedAt),message:'Y\xeau c\u1ea7u t\u1ea1o vendor c\u1ee7a b\u1ea1n \u0111\u00e3 b\u1ecb t\u1eeb ch\u1ed1i.\n\nL\xfd do: '+reason+'\n\nVui l\xf2ng ch\u1ec9nh s\u1eeda v\xe0 g\u1eedi l\u1ea1i y\xeau c\u1ea7u.',action:'B\u1ecb t\u1eeb ch\u1ed1i'});
+  updatePendingCount();applyFilter();
+  showToast('error','\u0110\u00e3 t\u1eeb ch\u1ed1i','Y\xeau c\u1ea7u '+req.id+' b\u1ecb t\u1eeb ch\u1ed1i. Email \u0111\u00e3 g\u1eedi \u0111\u1ebfn ng\u01b0\u1eddi t\u1ea1o.');
+}
 
-  el.className = '';
-  if (type === 'success') { el.classList.add('success'); icon.textContent = '✓'; }
-  else if (type === 'error') { el.classList.add('error'); icon.textContent = '✕'; }
-  else { icon.textContent = 'ℹ'; }
+// MODAL & TOAST
+function showResult(type,title,msgHtml) {
+  const icon=document.getElementById('res-icon');
+  document.getElementById('res-title').textContent=title;
+  document.getElementById('res-msg').innerHTML=msgHtml;
+  icon.className='result-icon-circle '+type;
+  icon.textContent=type==='success'?'\u2713':type==='error'?'\u2715':'\u24d8';
+  document.getElementById('result-modal-wrapper').classList.add('show');
+}
+function closeModal(){document.getElementById('result-modal-wrapper').classList.remove('show');}
 
+let toastTimer=null;
+function showToast(type,title,msg){
+  const el=document.getElementById('toast'),icon=document.getElementById('toast-icon');
+  document.getElementById('toast-title').textContent=title;
+  document.getElementById('toast-msg').textContent=msg;
+  el.className='';
+  if(type==='success'){el.classList.add('success');icon.textContent='\u2713';}
+  else if(type==='error'){el.classList.add('error');icon.textContent='\u2715';}
+  else{el.classList.add('info');icon.textContent='\u24d8';}
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 4500);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),4500);
 }
 </script>
 </body>
